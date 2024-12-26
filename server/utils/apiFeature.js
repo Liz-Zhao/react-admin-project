@@ -11,9 +11,7 @@ class ApiFeature {
       excludedFields.forEach((el) => delete queryObj[el]);
   
       let queryStr = JSON.stringify(queryObj);
-      queryStr = queryStr.replace(/\b(gte|gt|lt|lte|regex|options)\b/g, (match) => `$${match}`);
-      // console.log(queryStr);
-  
+      queryStr = queryStr.replace(/\b(gte|gt|lt|lte|regex|options)\b/g, (match) => `$${match}`);  
       this.query.find(JSON.parse(queryStr));
   
       return this;
