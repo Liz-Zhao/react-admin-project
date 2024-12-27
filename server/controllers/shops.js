@@ -4,13 +4,16 @@ const ApiFeature = require('../utils/apiFeature')
 
 exports.addShopcate = async(req,res)=>{
     try {
-        const {title, description} = req.body;
+        const {title, description,status} = req.body;
 
-        if(!title || !description){
-            return res.status(403).json({success:false, message:'title and description is required!'})
+        if(!title){
+            return res.status(403).json({success:false, message:'title is required!'})
+        }
+        if(!(status in ['0','1'])){
+            return res.status(403).json({success:false,message:'状态错误'})
         }
 
-        const newItem= await ShopCategory.create({title, description});
+        const newItem= await ShopCategory.create({title, description,status});
         return res.status(200).json({success:true,message:'success', data:newItem.toObject()})
 
     } catch (error) {
@@ -64,36 +67,16 @@ exports.getShopcates = async(req,res)=>{
 
 exports.updateShopcate = async(req,res)=>{
     try {
-        const {id, title, description} = req.body;
-        const updateItem = await ShopCategory.findByIdAndUpdate(id, {title, description},{new:true})
-        if(!updateItem){
-            return res.status(403).json({success:false,message:'该对象不存在'})
-        }
-
-        return res.status(200).json({success:true,message:'success',data:updateItem})
-    } catch (error) {
-        return res.status(500).json({
-            success:false,
-            error: error.message || error.toString(),
-            message: "There was an error on update shopcate.",
-          });
-    }
-}
-
-exports.updateStatusShopcate = async(req,res)=>{
-    try {
-        const {id, status} = req.body;
-        // check status
+        const {id, title, description,status} = req.body;
         if(!(status in ['0','1'])){
             return res.status(403).json({success:false,message:'状态错误'})
         }
-        const updateItem = await ShopCategory.findByIdAndUpdate(id, {status},{new:true})
-        // check id
+        const updateItem = await ShopCategory.findByIdAndUpdate(id, {title, description,status},{new:true})
         if(!updateItem){
             return res.status(403).json({success:false,message:'该对象不存在'})
         }
-        return res.status(200).json({success:true,message:'success',data:updateItem})
 
+        return res.status(200).json({success:true,message:'success',data:updateItem})
     } catch (error) {
         return res.status(500).json({
             success:false,
@@ -102,6 +85,7 @@ exports.updateStatusShopcate = async(req,res)=>{
           });
     }
 }
+
 
 // shop
 exports.addShop = async(req,res)=>{
@@ -157,7 +141,7 @@ exports.getShops = async(req,res)=>{
         
         const apiFeature_total = new ApiFeature(Shop.find(), req.query).filter();
 
-        const items = await apiFeature.query;
+        const items = await apiFeature.query.populate('shopcates','title');
         const totalsQueryString = await apiFeature_total.queryString;
         const totals = await Shop.countDocuments(JSON.stringify(totalsQueryString))
 

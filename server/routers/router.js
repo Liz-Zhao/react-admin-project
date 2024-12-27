@@ -13,7 +13,6 @@ router.post('/shopcate', Auth.isAuth, Shop.addShopcate )
 router.delete('/shopcate', Auth.isAuth, Shop.removeShopcate )
 router.get('/shopcates', Auth.isAuth, Shop.getShopcates )
 router.put('/shopcate', Auth.isAuth, Shop.updateShopcate )
-router.patch('/shopcate',Shop.updateStatusShopcate)
 
 // shop
 router.post('/shop', Auth.isAuth, Shop.addShop )
