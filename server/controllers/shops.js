@@ -27,7 +27,7 @@ exports.addShopcate = async(req,res)=>{
 
 exports.removeShopcate = async(req,res)=>{
     try {
-        const {id} =req.body;
+        const {id} =req.params;
         await ShopCategory.findByIdAndDelete(id)
         return res.status(200).json({success:true,message:'success'})
     } catch (error) {
@@ -114,13 +114,13 @@ exports.addShop = async(req,res)=>{
 
 exports.removeShop = async(req,res)=>{
     try {
-        const {id} =req.body;
+        const {id} =req.params;
         // check status
-        const item = await Shop.findOne({_id:id, status:'0'});
+        const item = await Shop.findOne({_id:id,status:'0'});
         if(!item){
             return res.status(403).json({success:false, message:'无法删除，非下架状态！'})
         }
-        await Shop.findByIdAndDelete(id)
+        await Shop.findByIdAndDelete(id);
         return res.status(200).json({success:true,message:'success'})
     } catch (error) {
         return res.status(500).json({
@@ -158,11 +158,13 @@ exports.getShops = async(req,res)=>{
 
 exports.updateShop = async(req,res)=>{
     try {
-        const {id, title,subtitle, description,shopcates,
+        const {_id:id, title,subtitle, description,shopcates,
             coverImage,shopImages,price,
             stockNums,specification} = req.body;
+
         const updateItem = await Shop.findByIdAndUpdate(id, {title,subtitle, description,shopcates,
             coverImage,shopImages,price,stockNums,specification},{new:true})
+
         if(!updateItem){
             return res.status(403).json({success:false,message:'该对象不存在'})
         }

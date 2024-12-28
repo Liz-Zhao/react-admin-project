@@ -10,13 +10,13 @@ router.post('/login',Auth.login)
 
 // shopcate
 router.post('/shopcate', Auth.isAuth, Shop.addShopcate )
-router.delete('/shopcate', Auth.isAuth, Shop.removeShopcate )
+router.delete('/shopcate/:id', Auth.isAuth, Shop.removeShopcate )
 router.get('/shopcates', Auth.isAuth, Shop.getShopcates )
 router.put('/shopcate', Auth.isAuth, Shop.updateShopcate )
 
 // shop
 router.post('/shop', Auth.isAuth, Shop.addShop )
-router.delete('/shop', Auth.isAuth, Shop.removeShop )
+router.delete('/shop/:id', Auth.isAuth, Shop.removeShop )
 router.get('/shops', Auth.isAuth, Shop.getShops )
 router.get('/shop/:id', Auth.isAuth, Shop.getShop )
 router.put('/shop', Auth.isAuth, Shop.updateShop )

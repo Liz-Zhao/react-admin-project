@@ -15,7 +15,8 @@ import {
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
-import { addShopAPI, getShopcatesAPI } from "../apis/apiRequest";
+import { addShopAPI, getShopAPI, getShopcatesAPI, updateShopAPI } from "../apis/apiRequest";
+import { useNavigate, useParams } from "react-router";
 
 const AddShop = () => {
   const [formData, setFormData] = useState({
@@ -27,11 +28,13 @@ const AddShop = () => {
     shopImages: [],
     price: "",
     stockNums: "",
-    specifications: [{ title: "", options: [{ title: "", price: "" }] }],
+    specification: [{ title: "", options: [{ title: "", price: "" }] }],
   });
 
   const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate()
+  let {id} = useParams()
 
   useEffect(() => {
     // Fetch categories
@@ -41,8 +44,20 @@ const AddShop = () => {
         setCategories(res.data.data);
       }
     };
+
+    const getShop = async()=>{
+      const res = await getShopAPI(id);
+      if(res.success){
+        setFormData(res.data)
+      }
+    }
+
     getCategories();
-  }, []);
+    if(id){
+      getShop()
+    }
+
+  }, [id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -71,23 +86,29 @@ const AddShop = () => {
   };
 
   const handleSpecificationChange = (index, field, value) => {
-    const newSpecs = [...formData.specifications];
+    const newSpecs = [...formData.specification];
     newSpecs[index][field] = value;
     setFormData((prev) => ({
       ...prev,
-      specifications: newSpecs,
+      specification: newSpecs,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission
-    console.log(formData);
-    const res = await addShopAPI(formData);
-    if (res.success) {
-      setOpen(true);
-      // message.success('新增商品成功')
+    if(id){
+      const res = await updateShopAPI(formData);
+      if (res.success) {
+        setOpen(true);
+      }
+    }else{
+      const res = await addShopAPI(formData);
+      if (res.success) {
+        setOpen(true);
+      }
     }
+    
   };
 
   const handleClose = (event, reason) => {
@@ -119,7 +140,7 @@ const AddShop = () => {
           variant="filled"
           sx={{ width: "100%" }}
         >
-          新增成功
+          {id ? '修改成功' : '新增成功'}
         </Alert>
       </Snackbar>
       <Card variant="outlined" sx={{ p: 3 }}>
@@ -251,7 +272,7 @@ const AddShop = () => {
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Typography variant="h6">规格</Typography>
-            {formData.specifications.map((specGroup, groupIndex) => (
+            {formData.specification.map((specGroup, groupIndex) => (
               <Box
                 key={groupIndex}
                 sx={{
@@ -277,11 +298,11 @@ const AddShop = () => {
                   />
                   <IconButton
                     onClick={() => {
-                      const newSpecs = [...formData.specifications];
+                      const newSpecs = [...formData.specification];
                       newSpecs.splice(groupIndex, 1);
                       setFormData((prev) => ({
                         ...prev,
-                        specifications: newSpecs,
+                        specification: newSpecs,
                       }));
                     }}
                     color="error"
@@ -304,12 +325,12 @@ const AddShop = () => {
                       label="规格选项"
                       value={option.title}
                       onChange={(e) => {
-                        const newSpecs = [...formData.specifications];
+                        const newSpecs = [...formData.specification];
                         newSpecs[groupIndex].options[optionIndex].title =
                           e.target.value;
                         setFormData((prev) => ({
                           ...prev,
-                          specifications: newSpecs,
+                          specification: newSpecs,
                         }));
                       }}
                     />
@@ -318,12 +339,12 @@ const AddShop = () => {
                       label="价格"
                       value={option.price}
                       onChange={(e) => {
-                        const newSpecs = [...formData.specifications];
+                        const newSpecs = [...formData.specification];
                         newSpecs[groupIndex].options[optionIndex].price =
                           e.target.value;
                         setFormData((prev) => ({
                           ...prev,
-                          specifications: newSpecs,
+                          specification: newSpecs,
                         }));
                       }}
                       inputProps={{
@@ -333,11 +354,11 @@ const AddShop = () => {
                     />
                     <IconButton
                       onClick={() => {
-                        const newSpecs = [...formData.specifications];
+                        const newSpecs = [...formData.specification];
                         newSpecs[groupIndex].options.splice(optionIndex, 1);
                         setFormData((prev) => ({
                           ...prev,
-                          specifications: newSpecs,
+                          specification: newSpecs,
                         }));
                       }}
                       color="error"
@@ -350,11 +371,11 @@ const AddShop = () => {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    const newSpecs = [...formData.specifications];
+                    const newSpecs = [...formData.specification];
                     newSpecs[groupIndex].options.push({ title: "", price: "" });
                     setFormData((prev) => ({
                       ...prev,
-                      specifications: newSpecs,
+                      specification: newSpecs,
                     }));
                   }}
                   startIcon={<AddIcon />}
@@ -369,8 +390,8 @@ const AddShop = () => {
               onClick={() => {
                 setFormData((prev) => ({
                   ...prev,
-                  specifications: [
-                    ...prev.specifications,
+                  specification: [
+                    ...prev.specification,
                     { title: "", options: [{ title: "", price: "" }] },
                   ],
                 }));
@@ -380,10 +401,25 @@ const AddShop = () => {
               添加规格组
             </Button>
           </Box>
-
-          <Button type="submit" variant="contained" size="large" sx={{ mt: 2 }}>
-            保存
-          </Button>
+          <div>
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              sx={{ mt: 2 ,marginRight:2}}
+            >
+              保存
+            </Button>
+            <Button
+              type="button"
+              variant="outlined"
+              size="large"
+              sx={{ mt: 2 }}
+              onClick={() => navigate('/shop')}
+            >
+              取消
+            </Button>
+          </div>
         </Box>
       </Card>
     </>

@@ -1,44 +1,98 @@
-import { DataGrid,GridToolbarContainer,GridRowModes,GridRowEditStopReasons,GridActionsCellItem } from '@mui/x-data-grid';
+import { DataGrid,GridRowModes,GridActionsCellItem } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import CancelIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import { addShopcateAPI, deleteShopcateAPI, getShopcatesAPI, updateShopcateAPI } from '../apis/apiRequest';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import RadioGroup from '@mui/material/RadioGroup';
+import Radio from '@mui/material/Radio';
+import ConfirmModal from '../components/ConfirmModal';
 
+const AddDialog = ({ edit, open, onClose, onSubmit }) => {
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    status: '0'
+  });
 
-function EditToolbar(props) {
-  const { setShopcates, setRowModesModel } = props;
-
-  const handleClick = async() => {
-    let index = 1;
-    const res = await addShopcateAPI({title:'示例'+index++,description:'描述',status:'0'})
-    if(res.success){
-      const id = res?.data?._id;
-      setShopcates((oldRows) => [
-        ...oldRows,
-        { ...res.data,id,isNew:true},
-      ]);
-      
-      setRowModesModel((oldModel) => ({
-        ...oldModel,
-        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'title' },
-      }));
-    }
-    
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
-  return (
-    <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-        新增
-      </Button>
-    </GridToolbarContainer>
-  );
-}
+  const handleSubmit = () => {
+    onSubmit(formData);
+    setFormData({
+      title: '',
+      description: '',
+      status: '0'
+    });
+  };
 
+  useEffect(()=>{
+    if(edit){
+      setFormData({
+      title: edit.title,
+      description: edit.description,
+      status: edit.status
+    });
+  }
+  },[edit]);
+  
+
+  return (
+    <Dialog open={open} onClose={onClose} disableRestoreFocus>
+      <DialogTitle>{edit ? '编辑' : '新增'}</DialogTitle>
+      <DialogContent>
+        <TextField
+          margin="dense"
+          name="title"
+          label="名称"
+          fullWidth
+          variant="outlined"
+          value={formData.title}
+          onChange={handleChange}
+          required
+        />
+        <TextField
+          margin="dense"
+          name="description"
+          label="描述"
+          fullWidth
+          variant="outlined"
+          value={formData.description}
+          onChange={handleChange}
+        />
+        <FormControl margin="dense">
+          <RadioGroup
+            row
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+          >
+            <FormControlLabel value="0" control={<Radio />} label="禁用" />
+            <FormControlLabel value="1" control={<Radio />} label="启用" />
+          </RadioGroup>
+        </FormControl>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>取消</Button>
+        <Button onClick={handleSubmit} color="primary" variant="contained">确定</Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 
 const paginationModel = { page: 0, pageSize: 10 };
@@ -46,7 +100,10 @@ const paginationModel = { page: 0, pageSize: 10 };
 
 export default function ShopCategory() {
   const [shopcates, setShopcates] = useState([]);
-  const [rowModesModel, setRowModesModel] = useState({});
+  const [open, setOpen] = useState(false);
+  const [deletedOpen, setDeletedOpen] = useState(false);
+  const [rowId, setRowId] = useState(null);
+  const [editRow,setEditRow] = useState(null);
 
   const columns = [
     { field: 'title', headerName: '名称', width: 130, editable: true, },
@@ -69,37 +126,26 @@ export default function ShopCategory() {
       headerName: '操作',
       width: 120,
       type: 'actions',
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-            key={id}
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={()=>handleCancelClick(id)}
-              color="error"
-            />,
-          ];
-        }
-  
+      getActions: (params) => {
         return [
           <GridActionsCellItem
-          key={id}
-            icon={<EditIcon />}
+            key={params.id}
+            icon={<EditIcon color="primary" />}
             label="Edit"
             className="textPrimary"
-            onClick={()=>handleEditClick(id)}
-            color="primary"
+            onClick={()=>{
+              setRowId(params.id); 
+              setOpen(true); 
+              setEditRow(params.row);
+            }}
           />,
           <GridActionsCellItem
-          key={id}
-            icon={<DeleteIcon />}
+            key={`delete-${params.id}`}
+            icon={<DeleteIcon color="error" />}
             label="Delete"
-            onClick={()=>handleDeleteClick(id)}
-            color="error"
+            onClick={()=>{
+              setRowId(params.id);
+              setDeletedOpen(true);}}
           />,
         ];
       },
@@ -110,33 +156,6 @@ export default function ShopCategory() {
     getShopCategory();
   }, []);
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
-  const handleRowEditStop = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      // event.defaultMuiPrevented = true;
-    }
-  };
-
-  const processRowUpdate =async (newRow) => {
-    const updatedRow = { ...newRow, isNew: false };
-    const res = await updateShopcateAPI({
-      id: updatedRow._id,
-      title: updatedRow.title,
-      description: updatedRow.description,
-      status: updatedRow.status
-    });
-
-    if (res.success) {
-      setShopcates(prevRows => 
-        prevRows.map((row) => (row.id === newRow.id ? updatedRow : row))
-      );
-    }
-    
-    return updatedRow;
-  };
 
   const getShopCategory = async () => {
     const res = await getShopcatesAPI();
@@ -149,51 +168,51 @@ export default function ShopCategory() {
     }
   }
 
-  const handleEditClick = (id) => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
-  
-  const handleDeleteClick = async(id) => {
-    const res = await deleteShopcateAPI(id);
-    if(res.success){
-      setShopcates(shopcates.filter((row) => row.id !== id));
+
+  const handleSubmit = async(formData)=>{
+    if(editRow){  
+      const res = await updateShopcateAPI({id:editRow._id,...formData});
+      if(res.success){
+        setShopcates(shopcates.map(item => item.id === editRow._id ? { ...item, ...formData } : item));
+        setEditRow(null);
+        setOpen(false);
+      }
+    }else{
+      const res = await addShopcateAPI(formData);
+      if(res.success){
+        const formattedData = {
+          ...res.data,
+        id: res.data._id}
+        setShopcates([formattedData,...shopcates]);
+        setEditRow(null);
+        setOpen(false);
+      }
     }
-  };
 
-  const handleCancelClick=(id)=>{
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
+  }
 
-    const editedRow = shopcates.find((row) => row.id === id);
-    if (editedRow.isNew) {
-      setShopcates(shopcates.filter((row) => row.id !== id));
+  const handleDelete = async()=>{
+    const res = await deleteShopcateAPI(rowId);
+    if(res.success){
+      setShopcates(shopcates.filter((row) => row.id !== rowId));
+      setDeletedOpen(false)
     }
   }
-  
 
   return (
     <>
     <h2>商品类型管理</h2>
+    <Button color="primary" startIcon={<AddIcon />} onClick={()=>setOpen(true)}>
+        新增
+      </Button>
+    <AddDialog edit={editRow} open={open} onClose={() => setOpen(false)} onSubmit={handleSubmit} />
+    <ConfirmModal open={deletedOpen} onClose={() => setDeletedOpen(false)} onConfirm={handleDelete} />
     <Paper sx={{ height: 600, width: '100%' }}>
       <DataGrid
         rows={shopcates}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[10, 20]}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        processRowUpdate={processRowUpdate}
-        onRowModesModelChange={handleRowModesModelChange}
-        onProcessRowUpdateError={(error) => {
-          console.error('Error during row update:', error);
-        }}
-        onRowEditStop={handleRowEditStop}
-        slots={{ toolbar: EditToolbar }}
-        slotProps={{
-          toolbar: { setShopcates, setRowModesModel },
-        }}
         checkboxSelection
         sx={{ border: 0 }}
       />
