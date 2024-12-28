@@ -20,6 +20,9 @@ export const loginAPI = async (username, password) => {
   return response.data;
 };
 
+
+// shopcate
+
 export const getShopcatesAPI = async () => {
   const response = await apiRequest.get('/shopcates');
   return response.data;
@@ -66,5 +69,17 @@ export const deleteShopAPI = async(id)=>{
 
 export const updateShopStatusAPI = async(payload)=>{
   const response = await apiRequest.patch('/shop',payload);
+  return response.data;
+}
+
+// order
+
+export const getOrdersAPI = async()=>{
+  const response = await apiRequest.get('/orders');
+  return response.data;
+}
+
+export const getOrderAPI = async(id)=>{
+  const response = await apiRequest.get('/order/'+id);
   return response.data;
 }

@@ -5,6 +5,7 @@ import MainLayout from "./pages/MainLayout";
 import ShopCategory from "./pages/ShopCategory";
 import Shop from "./pages/Shop";
 import Order from "./pages/Order"
+import OrderDetial from "./pages/OrderDetial"
 import Login from "./pages/Login";
 import AddShop from "./pages/AddShop";
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="shop/:id" element={<AddShop />} />
           <Route path="shop_add" element={<AddShop />} />
           <Route path="order" element={<Order />} />
+          <Route path="order/:id" element={<OrderDetial />} />
         </Route>
 
         <Route path="/login" element={<Login />} />

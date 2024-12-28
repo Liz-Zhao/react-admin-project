@@ -17,10 +17,11 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
-import LocalMallIcon from '@mui/icons-material/LocalMall';
-import ShopTwoIcon from '@mui/icons-material/ShopTwo';
-import GavelIcon from '@mui/icons-material/Gavel';
-import { Outlet, useNavigate } from "react-router";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
+import ShopTwoIcon from "@mui/icons-material/ShopTwo";
+import GavelIcon from "@mui/icons-material/Gavel";
+import { Link, Outlet, useLocation, useNavigate } from "react-router";
+import { Avatar, Breadcrumbs, Menu, MenuItem, Tooltip } from "@mui/material";
 
 const drawerWidth = 240;
 
@@ -102,10 +103,14 @@ const Drawer = styled(MuiDrawer, {
   ],
 }));
 
+
 export default function MainLayout() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   let navigate = useNavigate();
+  let location = useLocation();
+  const currentPath = location.pathname.split("/")[1];
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -115,11 +120,16 @@ export default function MainLayout() {
     setOpen(false);
   };
 
+  const handleLogout = async()=>{
+    navigate('/login');
+    localStorage.removeItem('token');
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
+      <AppBar position="fixed" open={open} sx={{ flexGrow: 1 }}>
+        <Toolbar sx={{ display:"flex", justifyContent:"space-between" }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -137,8 +147,40 @@ export default function MainLayout() {
           <Typography variant="h6" noWrap component="div">
             后台管理系统
           </Typography>
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={(event)=>setAnchorElUser(event.currentTarget)} sx={{ p: 0 }}>
+                {/* <Avatar alt="Remy Sharp" src="/public/vite.svg" /> */}
+                <Avatar>U</Avatar>
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={()=>setAnchorElUser(null)}
+            >
+             <MenuItem onClick={()=>setAnchorElUser(null)}>
+                  <Typography sx={{ textAlign: 'center' }}>账户信息</Typography>
+                </MenuItem>
+                <MenuItem  onClick={()=>handleLogout()}>
+                  <Typography sx={{ textAlign: 'center' }}>退出系统</Typography>
+                </MenuItem>
+            </Menu>
+          </Box>
         </Toolbar>
       </AppBar>
+  
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
@@ -151,102 +193,134 @@ export default function MainLayout() {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/")}} >
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => {
+              navigate("/");
+            }}
+          >
             <ListItemButton
               sx={[
-                {minHeight: 48,px: 2.5,},
+                { minHeight: 48, px: 2.5 },
                 open
-                  ? {justifyContent: "initial",}
-                  : {justifyContent: "center",},]}>
+                  ? { justifyContent: "initial" }
+                  : { justifyContent: "center" },
+              ]}
+            >
               <ListItemIcon
                 sx={[
                   {
                     minWidth: 0,
                     justifyContent: "center",
                   },
-                  open? {mr: 3,}: {mr: "auto",},
+                  open ? { mr: 3 } : { mr: "auto" },
                 ]}
               >
                 <MailIcon />
               </ListItemIcon>
               <ListItemText
                 primary="首页"
-                sx={[open? {opacity: 1,}: {opacity: 0,},]}
+                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
               />
             </ListItemButton>
           </ListItem>
 
-          <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/order")}} >
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => {
+              navigate("/order");
+            }}
+          >
             <ListItemButton
               sx={[
-                {minHeight: 48,px: 2.5,},
+                { minHeight: 48, px: 2.5 },
                 open
-                  ? {justifyContent: "initial",}
-                  : {justifyContent: "center",},]}>
+                  ? { justifyContent: "initial" }
+                  : { justifyContent: "center" },
+              ]}
+            >
               <ListItemIcon
                 sx={[
                   {
                     minWidth: 0,
                     justifyContent: "center",
                   },
-                  open? {mr: 3,}: {mr: "auto",},
+                  open ? { mr: 3 } : { mr: "auto" },
                 ]}
               >
                 <GavelIcon />
               </ListItemIcon>
               <ListItemText
                 primary="订单管理"
-                sx={[open? {opacity: 1,}: {opacity: 0,},]}
+                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
               />
             </ListItemButton>
           </ListItem>
 
-          <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/shop")}} >
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => {
+              navigate("/shop");
+            }}
+          >
             <ListItemButton
               sx={[
-                {minHeight: 48,px: 2.5,},
+                { minHeight: 48, px: 2.5 },
                 open
-                  ? {justifyContent: "initial",}
-                  : {justifyContent: "center",},]}>
+                  ? { justifyContent: "initial" }
+                  : { justifyContent: "center" },
+              ]}
+            >
               <ListItemIcon
                 sx={[
                   {
                     minWidth: 0,
                     justifyContent: "center",
                   },
-                  open? {mr: 3,}: {mr: "auto",},
+                  open ? { mr: 3 } : { mr: "auto" },
                 ]}
               >
                 <LocalMallIcon />
               </ListItemIcon>
               <ListItemText
                 primary="商品"
-                sx={[open? {opacity: 1,}: {opacity: 0,},]}
+                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
               />
             </ListItemButton>
           </ListItem>
 
-          <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/shopcate")}} >
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => {
+              navigate("/shopcate");
+            }}
+          >
             <ListItemButton
               sx={[
-                {minHeight: 48,px: 2.5,},
+                { minHeight: 48, px: 2.5 },
                 open
-                  ? {justifyContent: "initial",}
-                  : {justifyContent: "center",},]}>
+                  ? { justifyContent: "initial" }
+                  : { justifyContent: "center" },
+              ]}
+            >
               <ListItemIcon
                 sx={[
                   {
                     minWidth: 0,
                     justifyContent: "center",
                   },
-                  open? {mr: 3,}: {mr: "auto",},
+                  open ? { mr: 3 } : { mr: "auto" },
                 ]}
               >
                 <ShopTwoIcon />
               </ListItemIcon>
               <ListItemText
                 primary="商品类型"
-                sx={[open? {opacity: 1,}: {opacity: 0,},]}
+                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
               />
             </ListItemButton>
           </ListItem>
@@ -255,6 +329,23 @@ export default function MainLayout() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
+        <div role="presentation" >
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link underline="hover" color="inherit" href="/" to="/">
+              Home
+            </Link>
+            <Link
+              underline="hover"
+              color="inherit"
+              href={"/"+'currentPath'}
+              to={"/"+currentPath}
+            >
+              {currentPath}
+            </Link>
+            { location.pathname.split("/")[2] && <Typography sx={{ color: "text.primary" }}>详情</Typography>}
+            
+          </Breadcrumbs>
+        </div>
         <Outlet />
       </Box>
     </Box>

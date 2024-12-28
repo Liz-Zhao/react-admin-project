@@ -6,7 +6,7 @@ const shopListSchema = new mongoose.Schema({
     ref: "shops",
   },
   shopTitle:{type:String,required:true},
-  shopSubtitle:{type:String},
+  details:{type:String},
   price:{type:Number,required:true},
   solidNums:{type:Number,required:true},
   totalPrice:{type:Number,required:true}
@@ -22,6 +22,7 @@ const orderSchema = new mongoose.Schema(
     message: { type: String },
     totalSolidNums:{type:Number},
     actualPrice: { type: Number, required: true },
+    user:{type:mongoose.Schema.Types.ObjectId,ref:'users',required:true},
   },
   {
     timestamps: true,

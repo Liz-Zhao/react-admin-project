@@ -16,6 +16,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import ConfirmModal from '../components/ConfirmModal';
+import { Typography } from '@mui/material';
 
 const AddDialog = ({ edit, open, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -201,8 +202,8 @@ export default function ShopCategory() {
 
   return (
     <>
-    <h2>商品类型管理</h2>
-    <Button color="primary" startIcon={<AddIcon />} onClick={()=>setOpen(true)}>
+      <Typography variant="h5" sx={{ color: "text.primary", fontWeight: "bold", marginBottom:2, marginTop:2 }}>商品类型管理</Typography>
+      <Button color="primary" startIcon={<AddIcon />} onClick={()=>setOpen(true)}>
         新增
       </Button>
     <AddDialog edit={editRow} open={open} onClose={() => setOpen(false)} onSubmit={handleSubmit} />

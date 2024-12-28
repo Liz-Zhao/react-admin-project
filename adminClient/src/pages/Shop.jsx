@@ -1,6 +1,6 @@
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from "@mui/icons-material/Edit";
@@ -101,7 +101,7 @@ export default function Shop() {
 
   return (
     <>
-      <h2>商品管理</h2>
+      <Typography variant="h5" sx={{ color: "text.primary", fontWeight: "bold", marginBottom:2, marginTop:2 }}>商品管理</Typography>
       <Button variant="text" startIcon={<AddIcon />} onClick={toAddPage}>新增</Button>
       <ConfirmModal open={open} onClose={()=>{setOpen(false)}} onConfirm={deleteShop} />
 

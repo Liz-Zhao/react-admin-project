@@ -33,7 +33,7 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
-      'react/prop-types': 'off', // 禁用 props 校验
+      // 'react/prop-types': 'off', // 禁用 props 校验
     },
     extends: [
       // 'eslint:recommended',
