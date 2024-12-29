@@ -13,7 +13,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<MainLayout />}>
+        <Route path="/login" element={<Login />} />
+        
+        <Route element={
+            <MainLayout />
+        }>
           <Route index element={<Home />} />
           <Route path="shopcate" element={<ShopCategory />} />
           <Route path="shop" element={<Shop />} />
@@ -23,8 +27,6 @@ function App() {
           <Route path="order/:id" element={<OrderDetial />} />
         </Route>
 
-        <Route path="/login" element={<Login />} />
-    
       </Routes>
     </BrowserRouter>
   );

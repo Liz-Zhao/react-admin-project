@@ -22,6 +22,7 @@ import ShopTwoIcon from "@mui/icons-material/ShopTwo";
 import GavelIcon from "@mui/icons-material/Gavel";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
 import { Avatar, Breadcrumbs, Menu, MenuItem, Tooltip } from "@mui/material";
+import { useEffect } from "react";
 
 const drawerWidth = 240;
 
@@ -111,14 +112,17 @@ export default function MainLayout() {
   let location = useLocation();
   const currentPath = location.pathname.split("/")[1];
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const token = localStorage.getItem('token');
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  useEffect(()=>{
+    if(!token){
+      navigate('/login')
+    }
+  },[token,navigate])
+  
+  if(!token){
+     return null
+  }
 
   const handleLogout = async()=>{
     navigate('/login');
@@ -133,7 +137,7 @@ export default function MainLayout() {
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={()=>setOpen(true)}
             edge="start"
             sx={[
               {
@@ -183,7 +187,7 @@ export default function MainLayout() {
   
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={()=>setOpen(false)}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (

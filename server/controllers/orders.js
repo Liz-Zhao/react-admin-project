@@ -60,18 +60,22 @@ exports.addOrder = async (req, res) => {
   }
 };
 
-exports.cancelOrder = async (req, res) => {
+exports.updateOrderStatus = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id ,type} = req.body;
     // check status
     const item = await Order.findOne({ _id: id, status: "0" });
     if (!item) {
       return res
         .status(403)
-        .json({ success: false, message: "无法取消，非进行状态！" });
+        .json({ success: false, message: "无法操作，非进行状态！" });
     }
     // 更新状态为取消
-    await Order.findByIdAndUpdate(id, { status: "2" });
+    if(type==='cancel'){
+      await Order.findByIdAndUpdate(id, { status: "2" });
+    }else{
+      await Order.findByIdAndUpdate(id, { status: "1" });
+    }
     return res.status(200).json({ success: true, message: "success" });
   } catch (error) {
     return res.status(500).json({
@@ -81,6 +85,7 @@ exports.cancelOrder = async (req, res) => {
     });
   }
 };
+
 
 exports.deleteOrder = async (req, res) => {
   try {

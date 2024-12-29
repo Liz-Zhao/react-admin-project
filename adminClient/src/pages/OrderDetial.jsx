@@ -17,6 +17,16 @@ import { formatDate } from "../utils/formatDate";
 
 const steps = ["已下单", "进行中", "已完结 & 取消完结"];
 
+const formatStatus = (status)=>{
+  if(status==='0'){
+    return '进行中'
+  }else if(status==='1'){
+    return '已完结'
+  }else{
+    return '已取消'
+  }
+}
+
 const OrderDetial = () => {
   let { id } = useParams();
   const [order, setOrder] = React.useState(null);
@@ -47,6 +57,10 @@ const OrderDetial = () => {
             <Typography component="span" sx={{ color: "text.primary" }}>下单时间：</Typography>
             <span>{formatDate(order?.createdAt)}</span>
           </div>
+          <div>
+            <Typography component="span" sx={{ color: "text.primary" }}>订单状态：</Typography>
+            <span>{formatStatus(order?.status)}</span>
+          </div>
         </Box>
       </Box>
 
@@ -59,7 +73,7 @@ const OrderDetial = () => {
         >
           订单进度
         </Typography>
-        <Stepper activeStep={1} alternativeLabel>
+        <Stepper activeStep={order?.status == '1' ? 2: 1} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>

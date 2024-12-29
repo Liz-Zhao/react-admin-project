@@ -9,6 +9,15 @@ import { deleteShopAPI, getShopsAPI, updateShopStatusAPI } from "../apis/apiRequ
 import { useNavigate } from "react-router";
 import ConfirmModal from "../components/ConfirmModal";
 
+const getShopActions = (status)=>{
+  if(status === '0'){
+    return '上架'
+  }else if(status === '1'){
+    return '暂停销售(不下架)'
+  }else if(status === '2'){
+    return '重新销售'
+  }
+}
 
 const paginationModel = { page: 0, pageSize: 10 };
 
@@ -23,9 +32,9 @@ export default function Shop() {
       if(params === '0'){
         return '未上架'
       }else if(params === '1'){
-        return '上架'
+        return '已上架'
       }else if(params === '2'){
-        return '暂停销售'
+        return '暂停销售(未下架)'
       }
     }
      },
@@ -49,9 +58,9 @@ export default function Shop() {
         />,
         <GridActionsCellItem 
           key={`on-${params.id}`}
-          icon={<span style={{color:'green'}}>{params.row.status === '1' ? '暂停销售' : '上架'}</span>}
+          icon={<span style={{color:'green'}}>{getShopActions(params.row.status)}</span>}
           label="上架"
-          onClick={() => onShop({id:params.id,status:params.row.status === '0' ? '1' : '2'})}
+          onClick={() => onShop({id:params.id,status:params.row.status})}
         />
       ],
     },
@@ -92,7 +101,18 @@ export default function Shop() {
   }
 
   const onShop = async(params)=>{
-    const res = await updateShopStatusAPI(params)
+    let updateStatus = params.status
+    if(params.status === '0'){
+      // 上架
+      updateStatus = '1'
+    }else if(params.status === '1'){
+      // 暂停销售
+      updateStatus = '2'
+    }else if(params.status === '2'){
+      // 重新销售
+      updateStatus = '1'
+    }
+    const res = await updateShopStatusAPI({...params, status:updateStatus})
     if(res.success){
       getShops()
     }

@@ -74,12 +74,17 @@ export const updateShopStatusAPI = async(payload)=>{
 
 // order
 
-export const getOrdersAPI = async()=>{
-  const response = await apiRequest.get('/orders');
+export const getOrdersAPI = async(payload)=>{
+  const response = await apiRequest.get('/orders',{params:payload});
   return response.data;
 }
 
 export const getOrderAPI = async(id)=>{
   const response = await apiRequest.get('/order/'+id);
+  return response.data;
+}
+
+export const updateOrderStatusAPI = async(payload)=>{
+  const response = await apiRequest.patch('/order', payload);
   return response.data;
 }

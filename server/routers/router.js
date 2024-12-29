@@ -24,7 +24,7 @@ router.patch('/shop',Auth.isAuth, Shop.updateShopStatus)
 
 // order
 router.post('/order', Auth.isAuth, Order.addOrder)
-router.patch('/order', Auth.isAuth, Order.cancelOrder)
+router.patch('/order', Auth.isAuth, Order.updateOrderStatus)
 router.delete('/order/:id', Auth.isAuth, Order.deleteOrder)
 router.get('/orders', Auth.isAuth, Order.getOrders )
 router.get('/order/:id', Auth.isAuth, Order.getOrder )

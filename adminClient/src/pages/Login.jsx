@@ -14,7 +14,7 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import { Divider } from '@mui/material';
 import { loginAPI } from '../apis/apiRequest';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -60,7 +60,8 @@ export default function Login() {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
 //   const [open, setOpen] = React.useState(false);
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
 
 //   const handleClickOpen = () => {
 //     setOpen(true);
@@ -80,7 +81,8 @@ export default function Login() {
     console.log(res);
     if (res.success) {
       localStorage.setItem('token', res.data.token);
-      navigate('/');
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
     }
   };
 
