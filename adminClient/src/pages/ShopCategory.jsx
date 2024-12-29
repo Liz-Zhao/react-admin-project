@@ -17,6 +17,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import ConfirmModal from '../components/ConfirmModal';
 import { Typography } from '@mui/material';
+import { toast } from 'react-toastify';
 
 const AddDialog = ({ edit, open, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -187,6 +188,8 @@ export default function ShopCategory() {
         setShopcates([formattedData,...shopcates]);
         setEditRow(null);
         setOpen(false);
+      }else{
+        toast.error(res.message);
       }
     }
 
@@ -197,6 +200,8 @@ export default function ShopCategory() {
     if(res.success){
       setShopcates(shopcates.filter((row) => row.id !== rowId));
       setDeletedOpen(false)
+    }else{
+      toast.error(res.message);
     }
   }
 

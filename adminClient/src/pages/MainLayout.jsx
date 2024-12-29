@@ -23,6 +23,8 @@ import GavelIcon from "@mui/icons-material/Gavel";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
 import { Avatar, Breadcrumbs, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useEffect } from "react";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const drawerWidth = 240;
 
@@ -132,6 +134,7 @@ export default function MainLayout() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
+      <ToastContainer />
       <AppBar position="fixed" open={open} sx={{ flexGrow: 1 }}>
         <Toolbar sx={{ display:"flex", justifyContent:"space-between" }}>
           <IconButton

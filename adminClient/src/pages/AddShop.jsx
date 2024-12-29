@@ -1,5 +1,4 @@
 import {
-  Alert,
   Box,
   Button,
   Card,
@@ -8,7 +7,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -17,6 +15,8 @@ import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
 import { addShopAPI, getShopAPI, getShopcatesAPI, updateShopAPI } from "../apis/apiRequest";
 import { useNavigate, useParams } from "react-router";
+import { toast } from 'react-toastify';
+
 
 const AddShop = () => {
   const [formData, setFormData] = useState({
@@ -32,7 +32,6 @@ const AddShop = () => {
   });
 
   const [categories, setCategories] = useState([]);
-  const [open, setOpen] = useState(false);
   const navigate = useNavigate()
   let {id} = useParams()
 
@@ -100,24 +99,21 @@ const AddShop = () => {
     if(id){
       const res = await updateShopAPI(formData);
       if (res.success) {
-        setOpen(true);
+        toast.success('修改成功');
+      }else{
+        toast.error(res.message);
       }
     }else{
       const res = await addShopAPI(formData);
       if (res.success) {
-        setOpen(true);
+        toast.success('新增成功');
+      }else{
+        toast.error(res.message);
       }
     }
     
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
 
   return (
     <>
@@ -128,21 +124,7 @@ const AddShop = () => {
       >
         新增商品
       </Typography>
-      <Snackbar
-        open={open}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert
-          onClose={handleClose}
-          severity="success"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {id ? '修改成功' : '新增成功'}
-        </Alert>
-      </Snackbar>
+
       <Card variant="outlined" sx={{ p: 3 }}>
         <Box
           component="form"

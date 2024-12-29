@@ -15,6 +15,8 @@ import { styled } from '@mui/material/styles';
 import { Divider } from '@mui/material';
 import { loginAPI } from '../apis/apiRequest';
 import { useNavigate, useLocation } from 'react-router';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -58,31 +60,27 @@ export default function Login() {
   const [usernameErrorMessage, setUsernameErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-//   const [open, setOpen] = React.useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-//   const handleClickOpen = () => {
-//     setOpen(true);
-//   };
-
-//   const handleClose = () => {
-//     setOpen(false);
-//   };
 
   const handleSubmit = async(event) => {
     if (usernameError || passwordError) {
+      event.preventDefault();
       return;
     }
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const res = await loginAPI(data.get('username'), data.get('password'));
-    console.log(res);
+
     if (res.success) {
       localStorage.setItem('token', res.data.token);
       const from = location.state?.from?.pathname || '/';
       navigate(from, { replace: true });
+    }else{
+      toast.error('登录失败，密码或账号错误！');
+
     }
   };
 
@@ -115,6 +113,7 @@ export default function Login() {
 
   return (
     <>
+    <ToastContainer />
       <CssBaseline enableColorScheme />
       <SignInContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">

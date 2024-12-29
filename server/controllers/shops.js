@@ -95,7 +95,7 @@ exports.addShop = async(req,res)=>{
             stockNums,specification} = req.body;
 
         if(!title || !shopcates || !coverImage || !shopImages){
-            return res.status(403).json({success:false, message:'缺少必填项'})
+            return res.status(403).json({success:false, message:'缺少必填项, 如商品图片、商品展示图'})
         }
 
         const newItem= await Shop.create({title,subtitle, description,shopcates,

@@ -5,6 +5,7 @@ const apiRequest = axios.create({
   timeout: 5000,
 });
 
+// 请求拦截器
 apiRequest.interceptors.request.use(config => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -12,6 +13,25 @@ apiRequest.interceptors.request.use(config => {
   }
   return config;
 });
+
+// 响应拦截器
+apiRequest.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response) {
+      // 将错误响应转换为正常返回
+      return Promise.resolve({
+        data: {
+          success: false,
+          message: error.response.data.message || '请求失败',
+          status: error.response.status
+        }
+      });
+    }
+    // 对于网络错误等其他错误，仍然抛出异常
+    return Promise.reject(error);
+  }
+);
 
 export default apiRequest;
 
