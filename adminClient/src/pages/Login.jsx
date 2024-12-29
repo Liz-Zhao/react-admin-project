@@ -192,7 +192,8 @@ export default function Login() {
             </Link>
           </Box>
           <Divider>or</Divider>
-          <Typography sx={{ textAlign: 'center' }}>
+          <Box>
+            <Typography>
               Don&apos;t have an account?{' '}
               <Link
                 href="/material-ui/getting-started/templates/sign-in/"
@@ -202,6 +203,7 @@ export default function Login() {
                 Sign up
               </Link>
             </Typography>
+          </Box>
         </Card>
       </SignInContainer>
     </>

@@ -7,10 +7,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { visuallyHidden } from "@mui/utils";
 import { getOrdersAPI, updateOrderStatusAPI } from "../apis/apiRequest";
 import {
   Box,
@@ -19,6 +19,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  TableSortLabel,
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router";
@@ -78,6 +79,23 @@ const columns = [
   },
 ];
 
+// sort
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
+
+function getComparator(order, orderBy) {
+  return order === "desc"
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
 export default function Order() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -90,6 +108,16 @@ export default function Order() {
     createdAt2: null,
   });
 
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("createdAt");
+
+  const visibleRows = React.useMemo(
+    () =>
+      [...orders]
+        .sort(getComparator(order, orderBy))
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [order, orderBy, page, rowsPerPage, orders],
+  );
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -113,7 +141,6 @@ export default function Order() {
     });
   };
 
-
   React.useEffect(() => {
     getOrdersAPI().then((res) => {
       setOrders(res.data.data);
@@ -124,8 +151,12 @@ export default function Order() {
   const handleSearch = () => {
     const params = {
       status: searchForm.orderStatus,
-      'createdAt[gte]': searchForm.createdAt1 ? dayjs(searchForm.createdAt1).format('YYYY-MM-DD') : null,
-      'createdAt[lte]': searchForm.createdAt2 ? dayjs(searchForm.createdAt2).format('YYYY-MM-DD') : null,
+      "createdAt[gte]": searchForm.createdAt1
+        ? dayjs(searchForm.createdAt1).format("YYYY-MM-DD")
+        : null,
+      "createdAt[lte]": searchForm.createdAt2
+        ? dayjs(searchForm.createdAt2).format("YYYY-MM-DD")
+        : null,
     };
     // console.log(params);
     getOrdersAPI(params).then((res) => {
@@ -134,13 +165,18 @@ export default function Order() {
     });
   };
 
-
   const handleReset = () => {
-    setSearchForm({orderStatus: '', createdAt1: null, createdAt2: null});
+    setSearchForm({ orderStatus: "", createdAt1: null, createdAt2: null });
     getOrdersAPI().then((res) => {
       setOrders(res.data.data);
       setTotals(res.data.totals);
     });
+  };
+
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
   };
 
   return (
@@ -156,7 +192,7 @@ export default function Order() {
       >
         订单管理
       </Typography>
-      <Box sx={{ marginBottom: 3 , display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ marginBottom: 3, display: "flex", alignItems: "center" }}>
         <FormControl sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="orderStatus">订单状态</InputLabel>
           <Select
@@ -164,7 +200,12 @@ export default function Order() {
             id="orderStatus"
             value={searchForm.orderStatus}
             label="orderStatus"
-            onChange={()=>setSearchForm(prev => ({...prev, orderStatus: event.target.value}))}
+            onChange={() =>
+              setSearchForm((prev) => ({
+                ...prev,
+                orderStatus: event.target.value,
+              }))
+            }
           >
             <MenuItem value={0}>进行中</MenuItem>
             <MenuItem value={1}>已完结</MenuItem>
@@ -178,24 +219,32 @@ export default function Order() {
               <DatePicker
                 label="开始时间"
                 value={searchForm.createdAt1}
-                onChange={(newValue) => setSearchForm(prev => ({...prev, createdAt1: newValue}))}
+                onChange={(newValue) =>
+                  setSearchForm((prev) => ({ ...prev, createdAt1: newValue }))
+                }
               />
               <DatePicker
                 label="结束时间"
                 value={searchForm.createdAt2}
-                onChange={(newValue) => setSearchForm(prev => ({...prev, createdAt2: newValue}))}
+                onChange={(newValue) =>
+                  setSearchForm((prev) => ({ ...prev, createdAt2: newValue }))
+                }
               />
             </Box>
           </LocalizationProvider>
         </FormControl>
 
-        <Button variant="contained" color="primary" sx={{marginRight: 2}} onClick={handleSearch}>
-            查询
-          </Button>
-          <Button variant="outlined" color="primary" onClick={handleReset}>
-            重置
-          </Button>
-        
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ marginRight: 2 }}
+          onClick={handleSearch}
+        >
+          查询
+        </Button>
+        <Button variant="outlined" color="primary" onClick={handleReset}>
+          重置
+        </Button>
       </Box>
       <Paper sx={{ width: "100%" }}>
         <TableContainer sx={{ maxHeight: 440 }}>
@@ -230,14 +279,28 @@ export default function Order() {
                     key={column.id}
                     align={column.align}
                     style={{ top: 57, minWidth: column.minWidth }}
+                    sortDirection={orderBy === column.id ? order : false}
                   >
-                    {column.label}
+                    <TableSortLabel
+                      active={orderBy === column.id}
+                      direction={orderBy === column.id ? order : "asc"}
+                      onClick={() => handleRequestSort(column.id)}
+                    >
+                      {column.label}
+                      {orderBy === column.id ? (
+                        <Box component="span" sx={visuallyHidden}>
+                          {order === "desc"
+                            ? "sorted descending"
+                            : "sorted ascending"}
+                        </Box>
+                      ) : null}
+                    </TableSortLabel>
                   </TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders
+              {visibleRows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
