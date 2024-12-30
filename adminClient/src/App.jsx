@@ -9,12 +9,14 @@ import OrderDetial from "./pages/OrderDetial"
 import Login from "./pages/Login";
 import AddShop from "./pages/AddShop";
 import UserInfo from "./pages/UserInfo";
+import Register from "./pages/Register";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         
         <Route element={
             <MainLayout />

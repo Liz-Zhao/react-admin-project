@@ -12,7 +12,6 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import { Divider } from '@mui/material';
 import { loginAPI } from '../apis/apiRequest';
 import { useNavigate, useLocation } from 'react-router';
 import { ToastContainer, toast } from 'react-toastify';
@@ -180,22 +179,12 @@ export default function Login() {
             >
               登录
             </Button>
-            <Link
-              component="button"
-              type="button"
-              //   onClick={handleClickOpen}
-              variant="body2"
-              sx={{ alignSelf: 'center' }}
-            >
-              忘记密码？
-            </Link>
           </Box>
-          <Divider>or</Divider>
           <Box>
             <Typography>
               没有账号？{' '}
               <Link
-                href="/material-ui/getting-started/templates/sign-in/"
+                href="/register"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >

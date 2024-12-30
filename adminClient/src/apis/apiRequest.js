@@ -40,6 +40,11 @@ export const loginAPI = async (username, password) => {
   return response.data;
 };
 
+export const registerAPI = async(payload)=>{
+  const response = await apiRequest.post('/signup', payload);
+  return response.data;
+}
+
 // users
 export const getUserAPI = async()=>{
   const response = await apiRequest.get('/user');

@@ -2,6 +2,7 @@ const Auth = require('../controllers/auth')
 const Shop = require('../controllers/shops')
 const Order = require('../controllers/orders')
 const User = require('../controllers/users')
+const {upload,uploadFile} = require('../controllers/fileUpload')
 const express = require('express')
 
 const router = express.Router()
@@ -11,8 +12,6 @@ router.post('/login',Auth.login)
 
 // users
 router.get('/user', Auth.isAuth, User.getUser)
-// router.patch('/username', Auth.isAuth, User.updateUsername)
-// router.patch('/useremail', Auth.isAuth, User.updateUserEmail)
 router.patch('/userfield', Auth.isAuth, User.changeUserField)
 router.patch('/password', Auth.isAuth, User.changePassword)    
 
@@ -36,5 +35,9 @@ router.patch('/order', Auth.isAuth, Order.updateOrderStatus)
 router.delete('/order/:id', Auth.isAuth, Order.deleteOrder)
 router.get('/orders', Auth.isAuth, Order.getOrders )
 router.get('/order/:id', Auth.isAuth, Order.getOrder )
+
+// file upload
+router.post('/upload/image', Auth.isAuth ,upload.single("file"), uploadFile)
+router.post("/upload/photos",Auth.isAuth ,upload.array("file", 9),uploadFile);
 
 module.exports = router
