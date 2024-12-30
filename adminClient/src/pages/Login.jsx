@@ -122,7 +122,7 @@ export default function Login() {
             variant="h4"
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
-            Sign in
+            登录
           </Typography>
           <Box
             component="form"
@@ -178,7 +178,7 @@ export default function Login() {
               variant="contained"
               onClick={validateInputs}
             >
-              Sign in
+              登录
             </Button>
             <Link
               component="button"
@@ -187,19 +187,19 @@ export default function Login() {
               variant="body2"
               sx={{ alignSelf: 'center' }}
             >
-              Forgot your password?
+              忘记密码？
             </Link>
           </Box>
           <Divider>or</Divider>
           <Box>
             <Typography>
-              Don&apos;t have an account?{' '}
+              没有账号？{' '}
               <Link
                 href="/material-ui/getting-started/templates/sign-in/"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
-                Sign up
+                注册
               </Link>
             </Typography>
           </Box>

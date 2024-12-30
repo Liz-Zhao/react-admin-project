@@ -40,6 +40,21 @@ export const loginAPI = async (username, password) => {
   return response.data;
 };
 
+// users
+export const getUserAPI = async()=>{
+  const response = await apiRequest.get('/user');
+  return response.data;
+}
+
+export const changeUserFieldAPI = async(payload)=>{
+  const response = await apiRequest.patch('/userfield',payload);
+  return response.data;
+}
+
+export const changePasswordAPI = async(payload)=>{
+  const response = await apiRequest.patch('/password',payload);
+  return response.data;
+}
 
 // shopcate
 

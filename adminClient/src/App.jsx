@@ -8,6 +8,7 @@ import Order from "./pages/Order"
 import OrderDetial from "./pages/OrderDetial"
 import Login from "./pages/Login";
 import AddShop from "./pages/AddShop";
+import UserInfo from "./pages/UserInfo";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="shop_add" element={<AddShop />} />
           <Route path="order" element={<Order />} />
           <Route path="order/:id" element={<OrderDetial />} />
+          <Route path="user" element={<UserInfo />} />
         </Route>
 
       </Routes>

@@ -1,12 +1,20 @@
 const Auth = require('../controllers/auth')
 const Shop = require('../controllers/shops')
 const Order = require('../controllers/orders')
+const User = require('../controllers/users')
 const express = require('express')
 
 const router = express.Router()
 
 router.post('/signup',Auth.signup)
 router.post('/login',Auth.login)
+
+// users
+router.get('/user', Auth.isAuth, User.getUser)
+// router.patch('/username', Auth.isAuth, User.updateUsername)
+// router.patch('/useremail', Auth.isAuth, User.updateUserEmail)
+router.patch('/userfield', Auth.isAuth, User.changeUserField)
+router.patch('/password', Auth.isAuth, User.changePassword)    
 
 // shopcate
 router.post('/shopcate', Auth.isAuth, Shop.addShopcate )
