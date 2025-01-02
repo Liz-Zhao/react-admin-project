@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const shopListSchema = new mongoose.Schema({
-  shopID: {
+  id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "shops",
   },
-  shopTitle:{type:String,required:true},
+  title:{type:String,required:true},
   details:{type:String},
   price:{type:Number,required:true},
   solidNums:{type:Number,required:true},

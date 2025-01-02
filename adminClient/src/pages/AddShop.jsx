@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Card,
+  Checkbox,
   FormControl,
   IconButton,
   InputLabel,
@@ -13,7 +14,7 @@ import {
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
-import { addShopAPI, getShopAPI, getShopcatesAPI, updateShopAPI } from "../apis/apiRequest";
+import { addShopAPI, getShopAPI, getShopcatesAPI, updateShopAPI, uploadFileAPI, uploadFilesAPI } from "../apis/apiRequest";
 import { useNavigate, useParams } from "react-router";
 import { toast } from 'react-toastify';
 
@@ -28,12 +29,13 @@ const AddShop = () => {
     shopImages: [],
     price: "",
     stockNums: "",
-    specification: [{ title: "", options: [{ title: "", price: "" }] }],
+    specification: [{ title: "", options: [{ title: "", price: "" ,checked: true}] }],
   });
 
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate()
   let {id} = useParams()
+
 
   useEffect(() => {
     // Fetch categories
@@ -62,7 +64,7 @@ const AddShop = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: value || '',
     }));
   };
 
@@ -78,11 +80,38 @@ const AddShop = () => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    setFormData((prev) => ({
-      ...prev,
-      coverImage: file.name,
-    }));
+    const formData = new FormData();
+    formData.append('file', file);
+    uploadFileAPI(formData).then((res)=>{
+      if(res.success){
+        setFormData((prev) => ({
+          ...prev,
+          coverImage: file.name,
+        }));
+        toast.success('上传成功');
+      }
+    })
+    
   };
+
+  const handleShopImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    const formData = new FormData();
+    // 将每个文件逐个添加到formData中
+    files.forEach((file) => {
+      formData.append('files', file);  // 'file'是multer中用来接收的字段名
+    });
+
+    uploadFilesAPI(formData).then((res)=>{
+      if(res.success){
+        setFormData((prev) => ({
+          ...prev,
+          shopImages: files.map((file) => file.name),
+        }));
+        toast.success('上传成功');
+      }
+    })
+  }
 
   const handleSpecificationChange = (index, field, value) => {
     const newSpecs = [...formData.specification];
@@ -136,7 +165,7 @@ const AddShop = () => {
               required
               label="商品名称"
               name="title"
-              value={formData.title}
+              value={formData.title || ''}
               onChange={handleInputChange}
             />
             <TextField
@@ -207,13 +236,7 @@ const AddShop = () => {
                 hidden
                 multiple
                 accept="image/*"
-                onChange={(e) => {
-                  const files = Array.from(e.target.files);
-                  setFormData((prev) => ({
-                    ...prev,
-                    shopImages: files.map((file) => file.name),
-                  }));
-                }}
+                onChange={handleShopImageUpload}
               />
             </Button>
             {formData.shopImages && formData.shopImages.length > 0 && (
@@ -334,6 +357,15 @@ const AddShop = () => {
                         min: "0",
                       }}
                     />
+                    <Checkbox checked={option.checked} 
+                      onChange={(e)=>{
+                        const newSpecs = [...formData.specification];
+                        newSpecs[groupIndex].options[optionIndex].checked = e.target.value
+                        setFormData((prev)=>({
+                          ...prev,
+                          specification:newSpecs,
+                      }))}} 
+                      inputProps={{ 'aria-label': 'controlled' }} />
                     <IconButton
                       onClick={() => {
                         const newSpecs = [...formData.specification];
@@ -399,7 +431,7 @@ const AddShop = () => {
               sx={{ mt: 2 }}
               onClick={() => navigate('/shop')}
             >
-              取消
+              取消返回
             </Button>
           </div>
         </Box>

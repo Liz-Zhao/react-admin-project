@@ -109,10 +109,10 @@ const OrderDetial = () => {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.shopID}
+                  {row.id}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {row.shopTitle}
+                  {row.title}
                 </TableCell>
                 <TableCell align="left">{row.details}</TableCell>
                 <TableCell align="right">{row.price}</TableCell>

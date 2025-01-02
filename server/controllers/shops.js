@@ -7,10 +7,10 @@ exports.addShopcate = async(req,res)=>{
         const {title, description,status} = req.body;
 
         if(!title){
-            return res.status(403).json({success:false, message:'title is required!'})
+            return res.status(400).json({success:false, message:'title is required!'})
         }
         if(!(status in ['0','1'])){
-            return res.status(403).json({success:false,message:'状态错误'})
+            return res.status(400).json({success:false,message:'状态错误'})
         }
 
         const newItem= await ShopCategory.create({title, description,status});
@@ -69,7 +69,7 @@ exports.updateShopcate = async(req,res)=>{
     try {
         const {id, title, description,status} = req.body;
         if(!(status in ['0','1'])){
-            return res.status(403).json({success:false,message:'状态错误'})
+            return res.status(400).json({success:false,message:'状态错误'})
         }
         const updateItem = await ShopCategory.findByIdAndUpdate(id, {title, description,status},{new:true})
         if(!updateItem){
@@ -95,7 +95,7 @@ exports.addShop = async(req,res)=>{
             stockNums,specification} = req.body;
 
         if(!title || !shopcates || !coverImage || !shopImages){
-            return res.status(403).json({success:false, message:'缺少必填项, 如商品图片、商品展示图'})
+            return res.status(400).json({success:false, message:'缺少必填项, 如商品图片、商品展示图'})
         }
 
         const newItem= await Shop.create({title,subtitle, description,shopcates,
@@ -116,7 +116,7 @@ exports.removeShop = async(req,res)=>{
     try {
         const {id} =req.params;
         // check status
-        const item = await Shop.findOne({_id:id,status:'0'});
+        const item = await Shop.findOne({_id:id});
         if(!item){
             return res.status(403).json({success:false, message:'无法删除，非下架状态！'})
         }
@@ -166,7 +166,7 @@ exports.updateShop = async(req,res)=>{
             coverImage,shopImages,price,stockNums,specification},{new:true})
 
         if(!updateItem){
-            return res.status(403).json({success:false,message:'该对象不存在'})
+            return res.status(400).json({success:false,message:'该对象不存在'})
         }
 
         return res.status(200).json({success:true,message:'success',data:updateItem})
@@ -184,7 +184,7 @@ exports.getShop = async(req,res)=>{
         const {id} = req.params;
         const updateItem = await Shop.findById(id)
         if(!updateItem){
-            return res.status(403).json({success:false,message:'该对象不存在'})
+            return res.status(400).json({success:false,message:'该对象不存在'})
         }
 
         return res.status(200).json({success:true,message:'success',data:updateItem})
@@ -202,11 +202,11 @@ exports.updateShopStatus = async(req,res)=>{
         const {id,status} = req.body;
         //check status
         if(!(status in ['0','1','2'])){
-            return res.status(403).json({success:false,message:'状态错误'})
+            return res.status(400).json({success:false,message:'状态错误'})
         }
         const updateItem = await Shop.findByIdAndUpdate(id, {status},{new:true})
         if(!updateItem){
-            return res.status(403).json({success:false,message:'该对象不存在'})
+            return res.status(400).json({success:false,message:'该对象不存在'})
         }
 
         return res.status(200).json({success:true,message:'success',data:updateItem})

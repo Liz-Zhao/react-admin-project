@@ -128,3 +128,22 @@ export const updateOrderStatusAPI = async(payload)=>{
   const response = await apiRequest.patch('/order', payload);
   return response.data;
 }
+
+// file
+export const uploadFileAPI = async(payload)=>{
+  const response = await apiRequest.post('/upload/image', 
+    payload, 
+    {headers:{
+    'Content-Type':"multipart/form-data"
+  }});
+  return response.data;
+}
+
+export const uploadFilesAPI = async(payload)=>{
+  const response = await apiRequest.post('/upload/photos', 
+    payload,
+    {headers:{
+    'Content-Type':"multipart/form-data"
+  }});
+  return response.data;
+}

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { deleteShopAPI, getShopsAPI, updateShopStatusAPI } from "../apis/apiRequest";
 import { useNavigate } from "react-router";
 import ConfirmModal from "../components/ConfirmModal";
+import { toast } from 'react-toastify';
 
 const getShopActions = (status)=>{
   if(status === '0'){
@@ -97,6 +98,8 @@ export default function Shop() {
     if(res.success){
       getShops()
       setOpen(false)
+    }else{
+      toast.error(res.message)
     }
   }
 

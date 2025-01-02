@@ -5,7 +5,8 @@ const specificationSchema = new mongoose.Schema({
     options:[
         {
             title:{type:String},
-            price:{type:Number}
+            price:{type:Number,default:0},
+            checked: {type:Boolean, default:false}
         }
     ]
 })

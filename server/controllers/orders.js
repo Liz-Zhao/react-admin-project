@@ -20,7 +20,7 @@ exports.addOrder = async (req, res) => {
       const s = await Shop.findById(item.shopID);
       if (!s) {
         return res
-          .status(401)
+          .status(404)
           .json({ success: false, message: "商品ID不存在" });
       }
     }
@@ -33,12 +33,12 @@ exports.addOrder = async (req, res) => {
 
     if (financial(total_price) !=financial(actualPrice)) {
       return res
-        .status(401)
+        .status(400)
         .json({ success: false, message: "价格计算不正确" });
     }
     if (total_nums != totalSolidNums) {
       return res
-        .status(401)
+        .status(400)
         .json({ success: false, message: "商品数量不正确" });
     }
     const newItem = await Order.create({
@@ -145,7 +145,7 @@ exports.getOrder = async (req, res) => {
     const { id } = req.params;
     const updateItem = await Order.findById(id).populate('user','username');
     if (!updateItem) {
-      return res.status(403).json({ success: false, message: "该对象不存在" });
+      return res.status(404).json({ success: false, message: "该对象不存在" });
     }
 
     return res
