@@ -8,6 +8,7 @@ const shopListSchema = new mongoose.Schema({
   title:{type:String,required:true},
   details:{type:String},
   price:{type:Number,required:true},
+  actualPrice:{type:Number, required:true},
   solidNums:{type:Number,required:true},
   totalPrice:{type:Number,required:true}
 });
@@ -21,7 +22,7 @@ const orderSchema = new mongoose.Schema(
         default:'0'},
     message: { type: String },
     totalSolidNums:{type:Number},
-    actualPrice: { type: Number, required: true },
+    totalMoney: { type: Number, required: true },
     user:{type:mongoose.Schema.Types.ObjectId,ref:'users',required:true},
   },
   {

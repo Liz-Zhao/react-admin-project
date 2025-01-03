@@ -61,6 +61,10 @@ const OrderDetial = () => {
             <Typography component="span" sx={{ color: "text.primary" }}>订单状态：</Typography>
             <span>{formatStatus(order?.status)}</span>
           </div>
+          <div>
+            <Typography component="span" sx={{ color: "text.primary" }}>用户留言：</Typography>
+            <span>{order?.message}</span>
+          </div>
         </Box>
       </Box>
 
@@ -98,6 +102,7 @@ const OrderDetial = () => {
               <TableCell>商品名称</TableCell>
               <TableCell align="left">商品信息</TableCell>
               <TableCell align="right">单价</TableCell>
+              <TableCell align="right">实际单价</TableCell>
               <TableCell align="right">数量</TableCell>
               <TableCell align="right">总价</TableCell>
             </TableRow>
@@ -116,18 +121,19 @@ const OrderDetial = () => {
                 </TableCell>
                 <TableCell align="left">{row.details}</TableCell>
                 <TableCell align="right">{row.price}</TableCell>
+                <TableCell align="right">{row.actualPrice}</TableCell>
                 <TableCell align="right">{row.solidNums}</TableCell>
                 <TableCell align="right">{row.totalPrice}</TableCell>
               </TableRow>
             ))}
             <TableRow>
-              <TableCell rowSpan={5} />
-              <TableCell colSpan={3}>总数量</TableCell>
+              <TableCell rowSpan={3} />
+              <TableCell colSpan={4}>总数量</TableCell>
               <TableCell align="right">{order?.totalSolidNums}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell colSpan={4}>总价格</TableCell>
-              <TableCell align="right">{order?.actualPrice}</TableCell>
+              <TableCell colSpan={5}>总价格</TableCell>
+              <TableCell align="right">{order?.totalMoney}</TableCell>
             </TableRow>
           </TableBody>
         </Table>

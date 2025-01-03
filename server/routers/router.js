@@ -21,7 +21,7 @@ router.patch('/password', Auth.isAuth, User.changePassword)
 // shopcate
 router.post('/shopcate', Auth.isAuth, Shop.addShopcate )
 router.delete('/shopcate/:id', Auth.isAuth, Shop.removeShopcate )
-router.get('/shopcates', Auth.isAuth, Shop.getShopcates )
+router.get('/shopcates', Shop.getShopcates )
 router.put('/shopcate', Auth.isAuth, Shop.updateShopcate )
 
 // shop

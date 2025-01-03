@@ -9,15 +9,15 @@ function financial(x) {
 
 exports.addOrder = async (req, res) => {
   try {
-    const { message, totalSolidNums, actualPrice, shops } = req.body;
+    const { message, totalSolidNums, totalMoney, shops } = req.body;
     const user = req.user;
   
-    let total_price = 0;
+    let total_money = 0;
     let total_nums = 0;
 
     // 先验证所有商品是否存在
     for (const item of shops) {
-      const s = await Shop.findById(item.shopID);
+      const s = await Shop.findById(item.id);
       if (!s) {
         return res
           .status(404)
@@ -27,11 +27,11 @@ exports.addOrder = async (req, res) => {
 
     // 然后计算总价和数量
     shops.forEach((item) => {
-      total_price += item.price * item.solidNums;
+      total_money += item.actualPrice * item.solidNums;
       total_nums += item.solidNums;
     });
 
-    if (financial(total_price) !=financial(actualPrice)) {
+    if (financial(total_money) !=financial(totalMoney)) {
       return res
         .status(400)
         .json({ success: false, message: "价格计算不正确" });
@@ -44,7 +44,7 @@ exports.addOrder = async (req, res) => {
     const newItem = await Order.create({
       message,
       totalSolidNums,
-      actualPrice,
+      totalMoney,
       shops,
       user:user._id
     });

@@ -65,7 +65,7 @@ const columns = [
     align: "right",
   },
   {
-    id: "actualPrice",
+    id: "totalMoney",
     label: "订单总金额",
     minWidth: 100,
     align: "right",

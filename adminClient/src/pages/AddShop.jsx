@@ -359,8 +359,8 @@ const AddShop = () => {
                     />
                     <Checkbox checked={option.checked} 
                       onChange={(e)=>{
-                        const newSpecs = [...formData.specification];
-                        newSpecs[groupIndex].options[optionIndex].checked = e.target.value
+                        let newSpecs = [...formData.specification];
+                        newSpecs[groupIndex].options[optionIndex].checked = e.target.checked
                         setFormData((prev)=>({
                           ...prev,
                           specification:newSpecs,
