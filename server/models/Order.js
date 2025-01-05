@@ -5,6 +5,7 @@ const shopListSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "shops",
   },
+  coverImage:{type:String},
   title:{type:String,required:true},
   details:{type:String},
   price:{type:Number,required:true},

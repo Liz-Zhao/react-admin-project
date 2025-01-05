@@ -32,6 +32,9 @@ router.get('/shop/:id', Shop.getShop )
 router.put('/shop', Auth.isAuth, Shop.updateShop )
 router.patch('/shop',Auth.isAuth, Shop.updateShopStatus)
 
+// weixin menu get shops
+router.get('/menu', Shop.getShopsByCate)
+
 // order
 router.post('/order', Auth.isAuth, Order.addOrder)
 router.patch('/order', Auth.isAuth, Order.updateOrderStatus)
@@ -43,4 +46,6 @@ router.get('/order/:id', Auth.isAuth, Order.getOrder )
 router.post('/upload/image', Auth.isAuth,FileUpload.upload.single("file"), FileUpload.uploadFile)
 router.post("/upload/photos",Auth.isAuth,FileUpload.upload.array("files", 9),FileUpload.uploadFiles);
 
+
+router.get('/test', Shop.test)
 module.exports = router

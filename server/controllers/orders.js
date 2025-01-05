@@ -116,13 +116,8 @@ exports.getOrders = async (req, res) => {
       .sort()
       .pagination();
 
-    const apiFeature_total = new ApiFeature(Order.find(), req.query).filter();
-
     const items = await apiFeature.query.populate('user','username');
-    const totalsQueryString = await apiFeature_total.queryString;
-    const totals = await Order.countDocuments(
-      JSON.stringify(totalsQueryString)
-    );
+    const totals = items.length
 
     return res
       .status(200)

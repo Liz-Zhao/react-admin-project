@@ -46,13 +46,9 @@ exports.getShopcates = async(req,res)=>{
         .limitFields()
         .sort()
         .pagination();      
-
-        const apiFeature_total = new ApiFeature(ShopCategory.find(), req.query).filter();
         
         const items = await apiFeature.query;
-        const totalsQueryString = await apiFeature_total.queryString;
-        const totals = await ShopCategory.countDocuments(JSON.stringify(totalsQueryString))
-
+        const totals = items.length
 
         return res.status(200).json({success:true,message:'success',data:{totals,data:items}})
 
@@ -139,14 +135,67 @@ exports.getShops = async(req,res)=>{
         .sort()
         .pagination();      
         
-        const apiFeature_total = new ApiFeature(Shop.find(), req.query).filter();
-
         const items = await apiFeature.query.populate('shopcates','title');
-        const totalsQueryString = await apiFeature_total.queryString;
-        const totals = await Shop.countDocuments(JSON.stringify(totalsQueryString))
+        const totals = items.length;
 
         return res.status(200).json({success:true,message:'success',data:{totals,data:items}})
 
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            error: error.message || error.toString(),
+            message: "There was an error on get shops.",
+          });
+    }
+}
+
+exports.getShopsByCate = async(req,res)=>{
+    try {
+        const items = await Shop.find().populate('shopcates', 'title');
+        
+        // Group shops by shopcate title
+        const groupedShops = items.reduce((acc, shop) => {
+            // Iterate over each shopcate in shop.shopcates
+            shop.shopcates.forEach(cate => {
+                const cateTitle = cate.title;
+
+                // Find existing group or create new one
+                let group = acc.find(g => g.cate === cateTitle);
+                if (!group) {
+                    group = {
+                        cate: cateTitle,
+                        shops: []
+                    };
+                    acc.push(group);
+                }
+
+                // Add shop to group
+                group.shops.push(shop);
+            });
+
+            return acc;
+        }, []);
+
+        return res.status(200).json({
+            success: true,
+            message: 'success',
+            data: groupedShops
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            error: error.message || error.toString(),
+            message: "There was an error on get shops.",
+          });
+    }
+}
+
+exports.test =async(req,res)=>{
+    try {
+        // const count = await Shop.countDocuments({title: { $regex: 'five5' }})
+        const count = await Shop.find({shopcates:'676e47170173af7ea409ca76'})
+        return res.status(200).json({data:count})
+        
     } catch (error) {
         return res.status(500).json({
             success:false,
