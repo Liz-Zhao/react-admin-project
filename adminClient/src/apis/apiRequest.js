@@ -83,8 +83,8 @@ export const updateShopcateAPI = async(payload) => {
   return response.data;
 };
 
-export const getShopsAPI = async () => {
-  const response = await apiRequest.get('/shops');
+export const getShopsAPI = async (payload) => {
+  const response = await apiRequest.get('/shops', {params:payload});
   return response.data;
 };
 export const getShopAPI = async(id)=>{

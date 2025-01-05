@@ -111,21 +111,17 @@ export default function Order() {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("createdAt");
 
-  const visibleRows = React.useMemo(
-    () =>
-      [...orders]
-        .sort(getComparator(order, orderBy))
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage, orders],
-  );
+  const visibleRows = React.useMemo(() => {
+    return [...orders].sort(getComparator(order, orderBy));  // 在这里进行排序
+  }, [orders, order, orderBy]);  // 依赖项包括 orders, order, orderBy
+  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+    setRowsPerPage(event.target.value);
   };
 
   const handleFinish = (id) => {
@@ -142,11 +138,11 @@ export default function Order() {
   };
 
   React.useEffect(() => {
-    getOrdersAPI().then((res) => {
+    getOrdersAPI({page:page+1, limit:rowsPerPage}).then((res) => {
       setOrders(res.data.data);
       setTotals(res.data.totals);
     });
-  }, []);
+  }, [page,rowsPerPage]);
 
   const handleSearch = () => {
     const params = {
@@ -300,8 +296,7 @@ export default function Order() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {visibleRows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              {(Array.isArray(visibleRows) && visibleRows.length > 0) && visibleRows
                 .map((row) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>

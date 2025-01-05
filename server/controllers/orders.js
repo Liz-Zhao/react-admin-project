@@ -117,7 +117,9 @@ exports.getOrders = async (req, res) => {
       .pagination();
 
     const items = await apiFeature.query.populate('user','username');
-    const totals = items.length
+    const totals_p = new ApiFeature(Order.find(), req.query).filter();
+    let totals = await totals_p.query
+    totals = totals.length
 
     return res
       .status(200)

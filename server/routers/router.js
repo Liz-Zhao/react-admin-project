@@ -32,8 +32,9 @@ router.get('/shop/:id', Shop.getShop )
 router.put('/shop', Auth.isAuth, Shop.updateShop )
 router.patch('/shop',Auth.isAuth, Shop.updateShopStatus)
 
+router.get('/shopGroup', Shop.getShopsByCateWithPage);
 // weixin menu get shops
-router.get('/menu', Shop.getShopsByCate)
+router.get('/menu', Shop.getShopsByCateNotPage)
 
 // order
 router.post('/order', Auth.isAuth, Order.addOrder)

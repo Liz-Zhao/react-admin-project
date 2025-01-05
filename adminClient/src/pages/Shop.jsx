@@ -20,7 +20,7 @@ const getShopActions = (status)=>{
   }
 }
 
-const paginationModel = { page: 0, pageSize: 10 };
+
 
 export default function Shop() {
   const columns = [
@@ -68,24 +68,30 @@ export default function Shop() {
   ];
   
   const [shops, setShops] = useState([]);
+  const [totalShops, setTotalShops] = useState(0)
   const navigate =useNavigate()
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
+  const [paginationModel, setPaginationModel] = useState({
+    pageSize: 10,
+    page: 0,
+  });
 
   useEffect(() => {
-    getShops();
-  }, []);
+    getShops(paginationModel.page,paginationModel.pageSize);
+  }, [paginationModel]);
 
 
-  const getShops = async () => {
-    const res = await getShopsAPI();
+  const getShops = async (page, pageSize) => {
+    const res = await getShopsAPI({page:page+1, limit:pageSize});
     if (res.success) {
       const formattedData = res.data.data.map((item) => ({
         ...item,
         id: item._id,
       }));
       setShops(formattedData);
+      setTotalShops(res.data.totals)
     }
   };
 
@@ -132,8 +138,11 @@ export default function Shop() {
         <DataGrid
           rows={shops}
           columns={columns}
-          initialState={{ pagination: { paginationModel } }}
-          pageSizeOptions={[10, 20]}
+          rowCount={totalShops}
+          paginationModel={paginationModel}
+          pageSizeOptions={[5,10, 20]}
+          paginationMode="server"
+          onPaginationModelChange={setPaginationModel}
           checkboxSelection
           sx={{ border: 0 }}
         />
