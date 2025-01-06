@@ -51,7 +51,9 @@ exports.getShopcates = async (req, res) => {
       .pagination();
 
     const items = await apiFeature.query;
-    const totals = items.length;
+    const totals_p = new ApiFeature(Shop.find(), req.query).filter();
+    let totals = await totals_p.query
+    totals = totals.length
 
     return res.status(200).json({
       success: true,

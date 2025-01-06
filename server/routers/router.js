@@ -27,11 +27,12 @@ router.put('/shopcate', Auth.isAuth, Shop.updateShopcate )
 // shop
 router.post('/shop', Auth.isAuth, Shop.addShop )
 router.delete('/shop/:id', Auth.isAuth, Shop.removeShop )
-router.get('/shops', Shop.getShops )
+router.get('/shops', Auth.isAuth, Shop.getShops )
 router.get('/shop/:id', Shop.getShop )
 router.put('/shop', Auth.isAuth, Shop.updateShop )
 router.patch('/shop',Auth.isAuth, Shop.updateShopStatus)
 
+// wexin menu cate grouped shops
 router.get('/shopGroup', Shop.getShopsByCateWithPage);
 // weixin menu get shops
 router.get('/menu', Shop.getShopsByCateNotPage)

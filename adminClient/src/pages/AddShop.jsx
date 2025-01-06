@@ -40,7 +40,7 @@ const AddShop = () => {
   useEffect(() => {
     // Fetch categories
     const getCategories = async () => {
-      const res = await getShopcatesAPI();
+      const res = await getShopcatesAPI({status: '1'});
       if (res.success) {
         setCategories(res.data.data);
       }

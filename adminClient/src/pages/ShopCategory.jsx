@@ -97,15 +97,18 @@ const AddDialog = ({ edit, open, onClose, onSubmit }) => {
 };
 
 
-const paginationModel = { page: 0, pageSize: 10 };
-
-
 export default function ShopCategory() {
   const [shopcates, setShopcates] = useState([]);
+  const [totals, setTotals] = useState(0)
   const [open, setOpen] = useState(false);
   const [deletedOpen, setDeletedOpen] = useState(false);
   const [rowId, setRowId] = useState(null);
   const [editRow,setEditRow] = useState(null);
+
+  const [paginationModel, setPaginationModel] = useState({
+    pageSize: 10,
+    page: 0,
+  });
 
   const columns = [
     { field: 'title', headerName: '名称', width: 130, editable: true, },
@@ -155,18 +158,19 @@ export default function ShopCategory() {
   ];
 
   useEffect(() => {
-    getShopCategory();
-  }, []);
+    getShopCategory(paginationModel.page, paginationModel.pageSize);
+  }, [paginationModel]);
 
 
-  const getShopCategory = async () => {
-    const res = await getShopcatesAPI();
+  const getShopCategory = async (page, pageSize) => {
+    const res = await getShopcatesAPI({page:page+1, limit:pageSize});
     if(res.success){
       const formattedData = res.data.data.map(item => ({
         ...item,
         id: item._id
       }));
       setShopcates(formattedData);
+      setTotals(res.data.totals)
     }
   }
 
@@ -217,8 +221,11 @@ export default function ShopCategory() {
       <DataGrid
         rows={shopcates}
         columns={columns}
-        initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[10, 20]}
+        rowCount={totals}
+        paginationModel={paginationModel}
+        pageSizeOptions={[5, 10, 20]}
+        onPaginationModelChange={setPaginationModel}
+        paginationMode="server"
         checkboxSelection
         sx={{ border: 0 }}
       />

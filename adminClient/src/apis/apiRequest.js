@@ -62,9 +62,8 @@ export const changePasswordAPI = async(payload)=>{
 }
 
 // shopcate
-
-export const getShopcatesAPI = async () => {
-  const response = await apiRequest.get('/shopcates');
+export const getShopcatesAPI = async (payload) => {
+  const response = await apiRequest.get('/shopcates', {params:payload});
   return response.data;
 };
 
@@ -83,6 +82,7 @@ export const updateShopcateAPI = async(payload) => {
   return response.data;
 };
 
+// shops
 export const getShopsAPI = async (payload) => {
   const response = await apiRequest.get('/shops', {params:payload});
   return response.data;
