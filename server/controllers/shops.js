@@ -197,7 +197,7 @@ exports.getShopsByCateWithPage = async (req, res) => {
     const { page = 1, pageSize = 10 } = req.query; // 获取分页参数
 
     // 查询所有shopcates
-    const shopCategories = await ShopCategory.find();
+    const shopCategories = await ShopCategory.find({status: '1'});
 
     // 创建一个查询结果数组，用来存储分组后的结果
     const result = [];
@@ -227,6 +227,7 @@ exports.getShopsByCateWithPage = async (req, res) => {
 
       result.push({
         cate: category.title, // 分组后的类别名称
+        id:category._id,
         shops: shops[0]?.data || [], // 当前类别下的shop列表
         page: parseInt(page), // 当前页码
         pageSize: parseInt(pageSize), // 每页数量
@@ -235,7 +236,7 @@ exports.getShopsByCateWithPage = async (req, res) => {
       });
     }
 
-    res.json(result);
+    res.status(200).json({success:true, data:result});
   } catch (error) {
     return res.status(500).json({
       success: false,
