@@ -1,6 +1,7 @@
 const ShopCategory = require("../models/ShopCategory");
 const Shop = require("../models/Shop");
 const ApiFeature = require("../utils/apiFeature");
+const { Types } = require("mongoose");
 
 exports.addShopcate = async (req, res) => {
   try {
@@ -52,8 +53,8 @@ exports.getShopcates = async (req, res) => {
 
     const items = await apiFeature.query;
     const totals_p = new ApiFeature(Shop.find(), req.query).filter();
-    let totals = await totals_p.query
-    totals = totals.length
+    let totals = await totals_p.query;
+    totals = totals.length;
 
     return res.status(200).json({
       success: true,
@@ -172,9 +173,8 @@ exports.getShops = async (req, res) => {
 
     const items = await apiFeature.query.populate("shopcates", "title");
     const totals_p = new ApiFeature(Shop.find(), req.query).filter();
-    let totals = await totals_p.query
-    totals = totals.length
-
+    let totals = await totals_p.query;
+    totals = totals.length;
 
     return res.status(200).json({
       success: true,
@@ -194,20 +194,17 @@ exports.getShops = async (req, res) => {
 // 在这种情况下，我们使用 $count 来获取符合条件的商店总数，并存储在 metadata 中。
 exports.getShopsByCateWithPage = async (req, res) => {
   try {
-    const { page = 1, pageSize = 10 } = req.query; // 获取分页参数
+    const { page = 1, pageSize = 10, id } = req.query; // 获取分页参数
+    
+    const cate = await ShopCategory.findOne({ status: "1", _id:id });
+    // 有ID
+    if (id) {
+      // const shops = await Shop.find({shopcates:id})
 
-    // 查询所有shopcates
-    const shopCategories = await ShopCategory.find({status: '1'});
-
-    // 创建一个查询结果数组，用来存储分组后的结果
-    const result = [];
-    // 处理每一个类别
-    for (let category of shopCategories) {
-      // 使用aggregate进行分组查询
       const shops = await Shop.aggregate([
         {
           $match: {
-            shopcates: category._id, // 根据shopcate_id进行匹配
+            shopcates: cate._id, // 使用 $elemMatch 来检查 id 是否在 shopcates 数组中
           },
         },
         {
@@ -224,19 +221,60 @@ exports.getShopsByCateWithPage = async (req, res) => {
       ]);
       const totalItems = shops[0]?.metadata[0]?.total || 0; // 获取总数量
       const totalPages = Math.ceil(totalItems / pageSize); // 计算总页数
-
-      result.push({
-        cate: category.title, // 分组后的类别名称
-        id:category._id,
+      
+      const data ={
+        cate: cate.title, // 分组后的类别名称
+        id: cate._id,
         shops: shops[0]?.data || [], // 当前类别下的shop列表
         page: parseInt(page), // 当前页码
         pageSize: parseInt(pageSize), // 每页数量
         totals: totalItems, // 总商品数量
         pages: totalPages, // 总页数
-      });
-    }
+      };
 
-    res.status(200).json({success:true, data:result});
+      res.status(200).json({ success: true, data });
+    } else {
+      // 查询所有shopcates
+      const shopCategories = await ShopCategory.find({ status: "1" });
+      // 创建一个查询结果数组，用来存储分组后的结果
+      const result = [];
+      // 处理每一个类别
+      for (let category of shopCategories) {
+        // 使用aggregate进行分组查询
+        const shops = await Shop.aggregate([
+          {
+            $match: {
+              shopcates: category._id, // 根据shopcate_id进行匹配
+            },
+          },
+          {
+            $facet: {
+              metadata: [
+                { $count: "total" }, // 获取总数
+              ],
+              data: [
+                { $skip: (page - 1) * pageSize }, // 分页 - 跳过前面的数据
+                { $limit: parseInt(pageSize) }, // 限制返回的数量
+              ],
+            },
+          },
+        ]);
+        const totalItems = shops[0]?.metadata[0]?.total || 0; // 获取总数量
+        const totalPages = Math.ceil(totalItems / pageSize); // 计算总页数
+
+        result.push({
+          cate: category.title, // 分组后的类别名称
+          id: category._id,
+          shops: shops[0]?.data || [], // 当前类别下的shop列表
+          page: parseInt(page), // 当前页码
+          pageSize: parseInt(pageSize), // 每页数量
+          totals: totalItems, // 总商品数量
+          pages: totalPages, // 总页数
+        });
+      }
+
+      res.status(200).json({ success: true, data: result });
+    }
   } catch (error) {
     return res.status(500).json({
       success: false,
