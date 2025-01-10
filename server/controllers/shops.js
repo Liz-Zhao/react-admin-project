@@ -196,15 +196,14 @@ exports.getShopsByCateWithPage = async (req, res) => {
   try {
     const { page = 1, pageSize = 10, id } = req.query; // 获取分页参数
     
-    const cate = await ShopCategory.findOne({ status: "1", _id:id });
-    // 有ID
+    // 有ID，则根据类别进行查询
     if (id) {
-      // const shops = await Shop.find({shopcates:id})
+      const cate = await ShopCategory.findOne({ status: "1", _id:id });
 
       const shops = await Shop.aggregate([
         {
           $match: {
-            shopcates: cate._id, // 使用 $elemMatch 来检查 id 是否在 shopcates 数组中
+            shopcates: cate._id, // 如果直接使用id, 会查不出来的
           },
         },
         {
