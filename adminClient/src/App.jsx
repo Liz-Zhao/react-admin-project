@@ -10,17 +10,17 @@ import Login from "./pages/Login";
 import AddShop from "./pages/AddShop";
 import UserInfo from "./pages/UserInfo";
 import Register from "./pages/Register";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
-        <Route element={
-            <MainLayout />
-        }>
+        <Route element={ <MainLayout />}>
           <Route index element={<Home />} />
           <Route path="shopcate" element={<ShopCategory />} />
           <Route path="shop" element={<Shop />} />
