@@ -2,10 +2,10 @@ const User = require('../models/User');
 const bcrypt = require("bcryptjs");
 
 
-exports.getUser = async(req,res,next)=>{
+exports.getUser = async(req,res)=>{
     try {
         const {_id:id} = req.user;
-        const users = await User.findById(id);
+        const users = await User.findById(id).populate('role');
         delete users.password;
         return res.status(200).json({success:true, message:'success', data:users})
     } catch (error) {   

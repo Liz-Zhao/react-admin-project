@@ -38,6 +38,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['normal', 'weixin'], // 限制类型只能是这两个值
     default: 'normal'
+  },
+  role:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'roles',
+    required:function(){
+      return this.type === 'normal'; // 如果是pc登录，role是必需的
+    }
   }
 },{
   timestamps:true

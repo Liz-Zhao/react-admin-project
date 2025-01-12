@@ -1,7 +1,7 @@
 const ShopCategory = require("../models/ShopCategory");
 const Shop = require("../models/Shop");
+const Roles = require("../models/Roles");
 const ApiFeature = require("../utils/apiFeature");
-const { Types } = require("mongoose");
 
 exports.addShopcate = async (req, res) => {
   try {
@@ -327,8 +327,9 @@ exports.getShopsByCateNotPage = async (req, res) => {
 exports.test = async (req, res) => {
   try {
     // const count = await Shop.countDocuments({title: { $regex: 'five5' }})
-    const count = await Shop.find({ shopcates: "676e47170173af7ea409ca76" });
-    return res.status(200).json({ data: count });
+    // const count = await Shop.find({ shopcates: "676e47170173af7ea409ca76" });
+    const newItem = await Roles.create({roleName:'admin', routes:['/','/shop','/shopcate','/order']})
+    return res.status(200).json({ data: newItem });
   } catch (error) {
     return res.status(500).json({
       success: false,

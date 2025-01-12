@@ -74,12 +74,15 @@ export default function Login() {
     const res = await loginAPI(data.get('username'), data.get('password'));
 
     if (res.success) {
+      localStorage.setItem('role', JSON.stringify(res.data.role))
+
       localStorage.setItem('token', res.data.token);
       const from = location.state?.from?.pathname || '/';
       navigate(from, { replace: true });
+       // 可选：在跳转前更新全局状态或触发页面刷新
+      window.location.reload();
     }else{
       toast.error('登录失败，密码或账号错误！');
-
     }
   };
 

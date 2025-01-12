@@ -50,7 +50,7 @@ exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
     // check username
-    const user = await User.findOne({ username, type: "normal" });
+    const user = await User.findOne({ username, type: "normal" }).populate('role');
     if (!user) {
       return res
         .status(403)

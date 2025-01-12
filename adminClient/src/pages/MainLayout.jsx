@@ -26,8 +26,16 @@ import { Avatar, Breadcrumbs, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useEffect } from "react";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
+
+const iconComponents = {
+  AccessibilityIcon,
+  LocalMallIcon,
+  ShopTwoIcon,
+  GavelIcon
+};
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -117,6 +125,9 @@ export default function MainLayout() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const token = localStorage.getItem('token');
 
+  const routes = useSelector((state) => state.app.routes)
+
+
   useEffect(()=>{
     if(!token){
       navigate('/login')
@@ -129,7 +140,7 @@ export default function MainLayout() {
 
   const handleLogout = async()=>{
     navigate('/login');
-    localStorage.removeItem('token');
+    localStorage.clear()
   }
 
   return (
@@ -233,138 +244,45 @@ export default function MainLayout() {
               />
             </ListItemButton>
           </ListItem>
-
-          <ListItem
-            disablePadding
-            sx={{ display: "block" }}
-            onClick={() => {
-              navigate("/order");
-            }}
-          >
-            <ListItemButton
-              sx={[
-                { minHeight: 48, px: 2.5 },
-                open
-                  ? { justifyContent: "initial" }
-                  : { justifyContent: "center" },
-              ]}
+          {
+            routes.map((route,index) => {
+              const IconComponent = iconComponents[route.icon]
+              return (<ListItem
+              key={index}
+              disablePadding
+              sx={{ display: "block" }}
+              onClick={() => {
+                navigate(route.path);
+              }}
             >
-              <ListItemIcon
+              <ListItemButton
                 sx={[
-                  {
-                    minWidth: 0,
-                    justifyContent: "center",
-                  },
-                  open ? { mr: 3 } : { mr: "auto" },
+                  { minHeight: 48, px: 2.5 },
+                  open
+                    ? { justifyContent: "initial" }
+                    : { justifyContent: "center" },
                 ]}
               >
-                <GavelIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="订单管理"
-                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-              />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem
-            disablePadding
-            sx={{ display: "block" }}
-            onClick={() => {
-              navigate("/shop");
-            }}
-          >
-            <ListItemButton
-              sx={[
-                { minHeight: 48, px: 2.5 },
-                open
-                  ? { justifyContent: "initial" }
-                  : { justifyContent: "center" },
-              ]}
-            >
-              <ListItemIcon
-                sx={[
-                  {
-                    minWidth: 0,
-                    justifyContent: "center",
-                  },
-                  open ? { mr: 3 } : { mr: "auto" },
-                ]}
-              >
-                <LocalMallIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="商品"
-                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-              />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem
-            disablePadding
-            sx={{ display: "block" }}
-            onClick={() => {
-              navigate("/shopcate");
-            }}
-          >
-            <ListItemButton
-              sx={[
-                { minHeight: 48, px: 2.5 },
-                open
-                  ? { justifyContent: "initial" }
-                  : { justifyContent: "center" },
-              ]}
-            >
-              <ListItemIcon
-                sx={[
-                  {
-                    minWidth: 0,
-                    justifyContent: "center",
-                  },
-                  open ? { mr: 3 } : { mr: "auto" },
-                ]}
-              >
-                <ShopTwoIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="商品类型"
-                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-              />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem
-            disablePadding
-            sx={{ display: "block" }}
-            onClick={() => {
-              navigate("/user");
-            }}
-          >
-            <ListItemButton
-              sx={[
-                { minHeight: 48, px: 2.5 },
-                open
-                  ? { justifyContent: "initial" }
-                  : { justifyContent: "center" },
-              ]}
-            >
-              <ListItemIcon
-                sx={[
-                  {
-                    minWidth: 0,
-                    justifyContent: "center",
-                  },
-                  open ? { mr: 3 } : { mr: "auto" },
-                ]}
-              >
-                <AccessibilityIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="个人信息"
-                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-              />
-            </ListItemButton>
-          </ListItem>
+                <ListItemIcon
+                  sx={[
+                    {
+                      minWidth: 0,
+                      justifyContent: "center",
+                    },
+                    open ? { mr: 3 } : { mr: "auto" },
+                  ]}
+                >
+                  {IconComponent ? <IconComponent /> : null}
+                </ListItemIcon>
+                <ListItemText
+                  primary={route.name}
+                  sx={[open ? { opacity: 1 } : { opacity: 0 }]}
+                />
+              </ListItemButton>
+            </ListItem>)
+            })
+          }
+          
         </List>
         <Divider />
       </Drawer>
