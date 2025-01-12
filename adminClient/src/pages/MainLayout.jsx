@@ -125,7 +125,7 @@ export default function MainLayout() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const token = localStorage.getItem('token');
 
-  const routes = useSelector((state) => state.app.routes)
+  const menuRoutes = useSelector((state) => state.app.menuRoutes)
 
 
   useEffect(()=>{
@@ -245,7 +245,7 @@ export default function MainLayout() {
             </ListItemButton>
           </ListItem>
           {
-            routes.map((route,index) => {
+            menuRoutes.map((route,index) => {
               const IconComponent = iconComponents[route.icon]
               return (<ListItem
               key={index}

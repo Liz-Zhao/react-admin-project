@@ -3,6 +3,7 @@ import routesConfig from "../utils/routesConfig";
 
 const initialState = {
   routes: [],
+  menuRoutes:[],
 };
 
 const appSlice = createSlice({
@@ -14,7 +15,14 @@ const appSlice = createSlice({
         return action.payload.includes(route.path);
       });
       state.routes = allowedRoutes;
+
+      const menuRoutes = routesConfig.filter((route)=>{
+        return action.payload.includes(route.path) && !route.hidden;
+      })
+      state.menuRoutes = menuRoutes
+
     },
+    
   },
 });
 
