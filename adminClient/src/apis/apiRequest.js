@@ -147,3 +147,24 @@ export const uploadFilesAPI = async(payload)=>{
   }});
   return response.data;
 }
+
+// roles
+export const addRoleAPI = async(payload)=>{
+  const response = await apiRequest.post('/role',payload);
+  return response.data;
+}
+
+export const getRolesAPI = async(payload)=>{
+  const response = await apiRequest.get('/roles',{params:payload});
+  return response.data;
+}
+
+export const getRoleAPI = async(id)=>{
+  const response = await apiRequest.get('/role/'+id);
+  return response.data;
+}
+
+export const updateRoleAPI = async(payload)=>{
+  const response = await apiRequest.put('/role',payload);
+  return response.data;
+}

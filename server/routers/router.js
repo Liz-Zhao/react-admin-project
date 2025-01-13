@@ -2,6 +2,7 @@ const Auth = require('../controllers/auth')
 const Shop = require('../controllers/shops')
 const Order = require('../controllers/orders')
 const User = require('../controllers/users')
+const Role = require('../controllers/roles')
 const FileUpload = require('../controllers/fileUpload')
 const express = require('express')
 
@@ -48,6 +49,11 @@ router.get('/order/:id', Auth.isAuth, Order.getOrder )
 router.post('/upload/image', Auth.isAuth,FileUpload.upload.single("file"), FileUpload.uploadFile)
 router.post("/upload/photos",Auth.isAuth,FileUpload.upload.array("files", 9),FileUpload.uploadFiles);
 
+// roles
+router.post('/role', Auth.isAuth, Role.addRole);
+router.get('/roles', Auth.isAuth, Role.getRoles);
+router.get('/role/:id', Auth.isAuth, Role.getRole);
+router.put('/role', Auth.isAuth, Role.updateRole)
 
 router.get('/test', Shop.test)
 module.exports = router

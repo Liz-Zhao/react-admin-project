@@ -2,8 +2,8 @@ const routesConfig = [
     {
         path:'/dashboard',
         element: 'Dashboard',
-        name:'图表',
-        icon:'',
+        name:'报表',
+        icon:'DashboardIcon',
         hidden: false,
     },
     {
@@ -54,9 +54,28 @@ const routesConfig = [
         name:'个人信息',
         icon: 'AccessibilityIcon',
         hidden: false,
+    },
+    {
+        path:'/permission',
+        element: 'Permission',
+        name:'权限管理',
+        icon: 'AccessibilityIcon',
+        hidden: false,
+    },
+    {
+        path:'/permission_add',
+        element: 'AddPermission',
+        name:'角色新增',
+        icon: '',
+        hidden: true,
+    },
+    {
+        path:'/permission/:id',
+        element: 'AddPermission',
+        name:'角色新增',
+        icon: '',
+        hidden: true,
     }
-
-
 ]
 
 export default routesConfig;

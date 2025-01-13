@@ -12,9 +12,13 @@ import Shop from "./pages/Shop";
 import ShopCategory from "./pages/ShopCategory";
 import UserInfo from "./pages/UserInfo";
 import Dashboard from "./pages/Dashboard";
+import Permission from './pages/Permission';
+import AddPermission from './pages/AddPermission'
 import { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import {setRoutes} from './slices/appSlice'
+import { Box } from "@mui/material";
+
 
 const components = {
   ShopCategory,
@@ -24,11 +28,14 @@ const components = {
   OrderDetial,
   UserInfo,
   Dashboard,
+  Permission,
+  AddPermission,
 };
 
 function App() {
   const dispatch = useDispatch();
-  const routes = useSelector((state) => state.app.routes)
+  const {routes, routLoading} = useSelector((state) => state.app)
+  const token = localStorage.getItem('token');
 
   useEffect(()=>{
     const userRole = JSON.parse(localStorage.getItem('role'));
@@ -36,6 +43,12 @@ function App() {
       dispatch(setRoutes(userRole.routes))
     }
   },[])
+
+  if(routLoading && token){
+    return (
+      <Box component="section" sx={{textAlign:'center', justifyContent:'center'}}>Loading...</Box>
+    )
+  }
 
   return (
     <BrowserRouter>

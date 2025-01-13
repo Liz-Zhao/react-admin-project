@@ -13,6 +13,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
+import GavelIcon from "@mui/icons-material/Gavel";
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -20,7 +22,6 @@ import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import ShopTwoIcon from "@mui/icons-material/ShopTwo";
-import GavelIcon from "@mui/icons-material/Gavel";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
 import { Avatar, Breadcrumbs, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useEffect } from "react";
@@ -34,7 +35,8 @@ const iconComponents = {
   AccessibilityIcon,
   LocalMallIcon,
   ShopTwoIcon,
-  GavelIcon
+  GavelIcon,
+  DashboardIcon,
 };
 
 const openedMixin = (theme) => ({

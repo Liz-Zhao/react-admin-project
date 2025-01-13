@@ -4,6 +4,7 @@ import routesConfig from "../utils/routesConfig";
 const initialState = {
   routes: [],
   menuRoutes:[],
+  routLoading: true, // 初始为 true
 };
 
 const appSlice = createSlice({
@@ -20,7 +21,7 @@ const appSlice = createSlice({
         return action.payload.includes(route.path) && !route.hidden;
       })
       state.menuRoutes = menuRoutes
-
+      state.routLoading = false
     },
     
   },

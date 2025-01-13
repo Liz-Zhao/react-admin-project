@@ -1,6 +1,6 @@
 const ShopCategory = require("../models/ShopCategory");
 const Shop = require("../models/Shop");
-const Roles = require("../models/Roles");
+const Roles = require("../models/Role");
 const ApiFeature = require("../utils/apiFeature");
 
 exports.addShopcate = async (req, res) => {
