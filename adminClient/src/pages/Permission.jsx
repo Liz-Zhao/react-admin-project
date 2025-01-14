@@ -4,6 +4,7 @@ import { Button, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from "@mui/icons-material/Edit";
+import FaceIcon from '@mui/icons-material/Face';
 import ConfirmModal from "../components/ConfirmModal";
 import { toast } from 'react-toastify';
 import React, { useEffect, useState } from 'react'
@@ -35,6 +36,12 @@ const Permission = () => {
           icon={<EditIcon color="primary" />}
           label="编辑"
           onClick={()=>navigate(`/permission/${params.id}`)}
+        />,
+        <GridActionsCellItem 
+          key={`connect-${params.id}`}
+          icon={<FaceIcon color="primary" />}
+          label="关联用户"
+          onClick={()=>navigate(`/permission/${params.id}/users`)}
         />,
         <GridActionsCellItem
           key={`delete-${params.id}`}

@@ -61,6 +61,11 @@ export const changePasswordAPI = async(payload)=>{
   return response.data;
 }
 
+export const getUsersAPI = async()=>{
+  const response = await apiRequest.get('/users');
+  return response.data;
+}
+
 // shopcate
 export const getShopcatesAPI = async (payload) => {
   const response = await apiRequest.get('/shopcates', {params:payload});
@@ -166,5 +171,20 @@ export const getRoleAPI = async(id)=>{
 
 export const updateRoleAPI = async(payload)=>{
   const response = await apiRequest.put('/role',payload);
+  return response.data;
+}
+
+export const getRoleUsers = async(id,payload)=>{
+  const response = await apiRequest.get('/role/'+id+'/users',{params:payload});
+  return response.data;
+}
+
+export const addUserWithRoleAPI = async(payload)=>{
+  const response = await apiRequest.post('/connect/user',payload);
+  return response.data;
+}
+
+export const removeUserWithRoleAPI = async(payload)=>{
+  const response = await apiRequest.post('/disconnect/user',payload);
   return response.data;
 }

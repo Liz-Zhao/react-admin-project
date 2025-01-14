@@ -41,10 +41,7 @@ const userSchema = new mongoose.Schema({
   },
   role:{
     type:mongoose.Schema.Types.ObjectId,
-    ref:'roles',
-    required:function(){
-      return this.type === 'normal'; // 如果是pc登录，role是必需的
-    }
+    ref:'roles'
   }
 },{
   timestamps:true

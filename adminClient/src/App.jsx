@@ -14,6 +14,7 @@ import UserInfo from "./pages/UserInfo";
 import Dashboard from "./pages/Dashboard";
 import Permission from './pages/Permission';
 import AddPermission from './pages/AddPermission'
+import ConnectUser from './pages/ConnectUser'
 import { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import {setRoutes} from './slices/appSlice'
@@ -30,6 +31,7 @@ const components = {
   Dashboard,
   Permission,
   AddPermission,
+  ConnectUser,
 };
 
 function App() {

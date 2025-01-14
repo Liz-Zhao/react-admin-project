@@ -16,6 +16,7 @@ router.post('/signin',Auth.signin)
 
 // users
 router.get('/user', Auth.isAuth, User.getUser)
+router.get('/users', Auth.isAuth, User.getNormalUsers)
 router.patch('/userfield', Auth.isAuth, User.changeUserField)
 router.patch('/password', Auth.isAuth, User.changePassword)    
 
@@ -53,7 +54,10 @@ router.post("/upload/photos",Auth.isAuth,FileUpload.upload.array("files", 9),Fil
 router.post('/role', Auth.isAuth, Role.addRole);
 router.get('/roles', Auth.isAuth, Role.getRoles);
 router.get('/role/:id', Auth.isAuth, Role.getRole);
-router.put('/role', Auth.isAuth, Role.updateRole)
+router.get('/role/:id/users', Auth.isAuth, Role.getUsersWithRole);
+router.put('/role', Auth.isAuth, Role.updateRole);
+router.post('/connect/user', Auth.isAuth, Role.roleConnectUser);
+router.post('/disconnect/user', Auth.isAuth, Role.roleDisconnectUser);
 
 router.get('/test', Shop.test)
 module.exports = router

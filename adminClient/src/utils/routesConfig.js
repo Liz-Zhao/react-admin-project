@@ -109,6 +109,14 @@ const routesConfig = [
                 icon: '',
                 hidden: true,
                 subMenu:null,
+            },
+            {
+                path:'/permission/:id/users',
+                element: 'ConnectUser',
+                name:'关联用户',
+                icon: '',
+                hidden: true,
+                subMenu:null,
             }
         ]
     },

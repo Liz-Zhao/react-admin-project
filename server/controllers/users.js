@@ -13,6 +13,16 @@ exports.getUser = async(req,res)=>{
     }
 }
 
+exports.getNormalUsers = async(req,res)=>{
+    try {
+        const users = await User.find({type:'normal'}).select("-password");
+        
+        return res.status(200).json({success:true, message:'success', data:users})
+    } catch (error) {
+        return res.status(500).json({success:false, message:'error', error: error.message || error.toString()})
+    }
+}
+
 
 exports.changeUserField = async(req,res,next)=>{
     try {

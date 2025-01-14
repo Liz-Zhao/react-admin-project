@@ -4,6 +4,31 @@ import { useNavigate, useParams } from "react-router";
 import { addRoleAPI, getRoleAPI, updateRoleAPI } from "../apis/apiRequest";
 import { toast } from "react-toastify";
 
+const mergePermissions = (defaultPermissions, currentPermissions) => {
+  return defaultPermissions.map((defaultItem) => {
+    // 在旧数据中找到与当前默认项匹配的项
+    const matchedItem = currentPermissions?.find(
+      (item) => item.title === defaultItem.title
+    );
+
+    // 如果存在子项，递归合并子项
+    if (defaultItem.children) {
+      return {
+        ...defaultItem,
+        ...matchedItem, // 旧数据优先
+        children: mergePermissions(defaultItem.children, matchedItem?.children || []),
+      };
+    }
+
+    // 没有子项，直接合并
+    return {
+      ...defaultItem,
+      ...matchedItem, // 旧数据优先
+    };
+  });
+};
+
+
 const AddPermission = () => {
   const navigate = useNavigate()
   let {id} = useParams()
@@ -39,6 +64,7 @@ const AddPermission = () => {
       { title: "权限管理", route:"/permission", checked:false, 
         children: [{ title:"新增",route:"/permission_add", checked: false },
           { title:"编辑", route:'/permission/:id',checked: false },
+          { title:"关联用户", route:'/permission/:id/users',checked: false },
           { title:"删除", checked: false },
       ]},
     ],
@@ -47,7 +73,12 @@ const AddPermission = () => {
   const getItemData = async()=>{
     const res = await getRoleAPI(id);
     if(res.success){
-      setFormData(res.data)
+      const mergedData = {
+        ...formData,
+        ...res.data,
+        permissions: mergePermissions(formData.permissions, res.data.permissions || []),
+      };
+      setFormData(mergedData)
     }
   }
 

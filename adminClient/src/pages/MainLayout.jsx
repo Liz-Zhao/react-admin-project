@@ -262,8 +262,8 @@ export default function MainLayout() {
           {MenuRoutes.map((route, index) => {
             const IconComponent = iconComponents[route.icon];
             return (
+              <Box key={index}>
               <ListItem
-                key={index}
                 disablePadding
                 sx={{ display: "block" }}
                 onClick={() => {
@@ -306,27 +306,29 @@ export default function MainLayout() {
                   />
                   { route.subMenu ? (route.subMenuOpen ? <ExpandLess /> : <ExpandMore />) :''}
                 </ListItemButton>
-                {route?.subMenu && (
-                  <Collapse in={route.subMenuOpen} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                      {route.subMenu.map((subMenu,index) => (
-                        <ListItemButton
-                          key={index}
-                          sx={{ pl: 4 }}
-                          onClick={() => {
-                            navigate(subMenu.path)
-                          }}
-                        >
-                          <ListItemIcon>
-                            <MailIcon />
-                          </ListItemIcon>
-                          <ListItemText primary={subMenu.name} />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Collapse>
-                )}
+                
               </ListItem>
+              {route?.subMenu && (
+                <Collapse in={route.subMenuOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    {route.subMenu.map((subMenu,index) => (
+                      <ListItemButton
+                        key={index}
+                        sx={{ pl: 4 }}
+                        onClick={() => {
+                          navigate(subMenu.path)
+                        }}
+                      >
+                        <ListItemIcon>
+                          <MailIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={subMenu.name} />
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </Collapse>
+              )}
+              </Box>
             );
           })}
         </List>
