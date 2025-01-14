@@ -37,6 +37,7 @@ import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import { useState } from "react";
 
 const drawerWidth = 240;
 
@@ -135,7 +136,9 @@ export default function MainLayout() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const token = localStorage.getItem("token");
 
-  const menuRoutes = useSelector((state) => state.app.menuRoutes);
+  let menuRoutes = useSelector((state) => state.app.menuRoutes);
+  menuRoutes = menuRoutes.map((route)=> route.subMenu ? {...route, subMenuOpen:false} : route)
+  const [MenuRoutes, setMenuRoutes] =  useState(menuRoutes)
 
   useEffect(() => {
     if (!token) {
@@ -256,7 +259,7 @@ export default function MainLayout() {
               />
             </ListItemButton>
           </ListItem>
-          {menuRoutes.map((route, index) => {
+          {MenuRoutes.map((route, index) => {
             const IconComponent = iconComponents[route.icon];
             return (
               <ListItem
@@ -266,6 +269,15 @@ export default function MainLayout() {
                 onClick={() => {
                   if (route.path && route.path.length > 0) {
                     navigate(route.path);
+                  }else{
+                    setMenuRoutes((prev) => 
+                      prev.map((route, i) => 
+                        i === index 
+                          ? { ...route, subMenuOpen: !route.subMenuOpen } // 更新指定索引的 subMenuOpen 状态
+                          : route // 其他项保持不变
+                      )
+                    );
+                    
                   }
                 }}
               >
@@ -292,9 +304,10 @@ export default function MainLayout() {
                     primary={route.name}
                     sx={[open ? { opacity: 1 } : { opacity: 0 }]}
                   />
+                  { route.subMenu ? (route.subMenuOpen ? <ExpandLess /> : <ExpandMore />) :''}
                 </ListItemButton>
                 {route?.subMenu && (
-                  <Collapse in={true} timeout="auto" unmountOnExit>
+                  <Collapse in={route.subMenuOpen} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
                       {route.subMenu.map((subMenu,index) => (
                         <ListItemButton
