@@ -1,19 +1,26 @@
 const Role = require("../models/Role");
 const ApiFeature = require("../utils/apiFeature");
 
+const filterRoutes = (permissions)=>{
+  let updateRoutes = [];
+
+  permissions.forEach((item) => {
+    if (item.route && item.checked) {
+      updateRoutes.push(item.route);
+      item.children.forEach((child) => {
+        if (child.route && item.checked) updateRoutes.push(child.route);
+      });
+    }
+  });
+
+  return updateRoutes;
+}
+
 exports.addRole = async (req, res) => {
   try {
     const { roleName, description, permissions } = req.body;
 
-    let updateRoutes = [];
-    permissions.forEach((item) => {
-      if (item.route && item.checked) {
-        updateRoutes.push(item.route);
-        item.children.forEach((child) => {
-          if (child.route && item.checked) updateRoutes.push(child.route);
-        });
-      }
-    });
+    let updateRoutes = filterRoutes(permissions);
 
     const newItem = await Role.create({
       roleName,
@@ -38,15 +45,7 @@ exports.updateRole = async (req, res) => {
   try {
     const { _id: id, roleName, description, permissions } = req.body;
 
-    let updateRoutes = [];
-    permissions.forEach((item) => {
-      if (item.route && item.checked) {
-        updateRoutes.push(item.route);
-        item.children.forEach((child) => {
-          if (child.route && item.checked) updateRoutes.push(child.route);
-        });
-      }
-    });
+    let updateRoutes = filterRoutes(permissions);
 
     const newItem = await Role.findByIdAndUpdate(
       id,
