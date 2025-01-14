@@ -17,7 +17,7 @@ import AddPermission from './pages/AddPermission'
 import ConnectUser from './pages/ConnectUser'
 import { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import {setRoutes} from './slices/appSlice'
+import {setRoutes,disableLoading} from './slices/appSlice'
 import { Box } from "@mui/material";
 
 
@@ -43,6 +43,8 @@ function App() {
     const userRole = JSON.parse(localStorage.getItem('role'));
     if(userRole){
       dispatch(setRoutes(userRole.routes))
+    }else{
+      dispatch(disableLoading())
     }
   },[])
 

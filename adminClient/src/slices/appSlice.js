@@ -41,12 +41,15 @@ const appSlice = createSlice({
       state.menuRoutes = menuRoutes
       state.routLoading = false
     },
+    disableLoading(state){
+      state.routLoading = false
+    }
     
   },
 });
 
 // 导出 actions
-export const {setRoutes} = appSlice.actions;
+export const {setRoutes,disableLoading} = appSlice.actions;
 
 // 导出 reducer
 export default appSlice.reducer;
