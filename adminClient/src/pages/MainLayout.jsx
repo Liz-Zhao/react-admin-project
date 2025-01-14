@@ -12,9 +12,9 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import AccessibilityIcon from '@mui/icons-material/Accessibility';
+import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import GavelIcon from "@mui/icons-material/Gavel";
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -22,11 +22,20 @@ import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import ShopTwoIcon from "@mui/icons-material/ShopTwo";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
-import { Avatar, Breadcrumbs, Menu, MenuItem, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Breadcrumbs,
+  Collapse,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material";
 import { useEffect } from "react";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
@@ -117,7 +126,6 @@ const Drawer = styled(MuiDrawer, {
   ],
 }));
 
-
 export default function MainLayout() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
@@ -125,36 +133,35 @@ export default function MainLayout() {
   let location = useLocation();
   const currentPath = location.pathname.split("/")[1];
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
-  const menuRoutes = useSelector((state) => state.app.menuRoutes)
+  const menuRoutes = useSelector((state) => state.app.menuRoutes);
 
-
-  useEffect(()=>{
-    if(!token){
-      navigate('/login')
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
     }
-  },[token,navigate])
-  
-  if(!token){
-     return null
+  }, [token, navigate]);
+
+  if (!token) {
+    return null;
   }
 
-  const handleLogout = async()=>{
-    navigate('/login');
-    localStorage.clear()
-  }
+  const handleLogout = async () => {
+    navigate("/login");
+    localStorage.clear();
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <ToastContainer />
       <AppBar position="fixed" open={open} sx={{ flexGrow: 1 }}>
-        <Toolbar sx={{ display:"flex", justifyContent:"space-between" }}>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={()=>setOpen(true)}
+            onClick={() => setOpen(true)}
             edge="start"
             sx={[
               {
@@ -170,41 +177,44 @@ export default function MainLayout() {
           </Typography>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={(event)=>setAnchorElUser(event.currentTarget)} sx={{ p: 0 }}>
+              <IconButton
+                onClick={(event) => setAnchorElUser(event.currentTarget)}
+                sx={{ p: 0 }}
+              >
                 {/* <Avatar alt="Remy Sharp" src="/public/vite.svg" /> */}
                 <Avatar>U</Avatar>
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: "45px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               open={Boolean(anchorElUser)}
-              onClose={()=>setAnchorElUser(null)}
+              onClose={() => setAnchorElUser(null)}
             >
-             <MenuItem onClick={()=>navigate('/user')}>
-                  <Typography sx={{ textAlign: 'center' }}>账户信息</Typography>
-                </MenuItem>
-                <MenuItem  onClick={()=>handleLogout()}>
-                  <Typography sx={{ textAlign: 'center' }}>退出系统</Typography>
-                </MenuItem>
+              <MenuItem onClick={() => navigate("/user")}>
+                <Typography sx={{ textAlign: "center" }}>账户信息</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => handleLogout()}>
+                <Typography sx={{ textAlign: "center" }}>退出系统</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
       </AppBar>
-  
+
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <IconButton onClick={()=>setOpen(false)}>
+          <IconButton onClick={() => setOpen(false)}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
@@ -246,51 +256,72 @@ export default function MainLayout() {
               />
             </ListItemButton>
           </ListItem>
-          {
-            menuRoutes.map((route,index) => {
-              const IconComponent = iconComponents[route.icon]
-              return (<ListItem
-              key={index}
-              disablePadding
-              sx={{ display: "block" }}
-              onClick={() => {
-                navigate(route.path);
-              }}
-            >
-              <ListItemButton
-                sx={[
-                  { minHeight: 48, px: 2.5 },
-                  open
-                    ? { justifyContent: "initial" }
-                    : { justifyContent: "center" },
-                ]}
+          {menuRoutes.map((route, index) => {
+            const IconComponent = iconComponents[route.icon];
+            return (
+              <ListItem
+                key={index}
+                disablePadding
+                sx={{ display: "block" }}
+                onClick={() => {
+                  if (route.path && route.path.length > 0) {
+                    navigate(route.path);
+                  }
+                }}
               >
-                <ListItemIcon
+                <ListItemButton
                   sx={[
-                    {
-                      minWidth: 0,
-                      justifyContent: "center",
-                    },
-                    open ? { mr: 3 } : { mr: "auto" },
+                    { minHeight: 48, px: 2.5 },
+                    open
+                      ? { justifyContent: "initial" }
+                      : { justifyContent: "center" },
                   ]}
                 >
-                  {IconComponent ? <IconComponent /> : null}
-                </ListItemIcon>
-                <ListItemText
-                  primary={route.name}
-                  sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-                />
-              </ListItemButton>
-            </ListItem>)
-            })
-          }
-          
+                  <ListItemIcon
+                    sx={[
+                      {
+                        minWidth: 0,
+                        justifyContent: "center",
+                      },
+                      open ? { mr: 3 } : { mr: "auto" },
+                    ]}
+                  >
+                    {IconComponent ? <IconComponent /> : null}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={route.name}
+                    sx={[open ? { opacity: 1 } : { opacity: 0 }]}
+                  />
+                </ListItemButton>
+                {route?.subMenu && (
+                  <Collapse in={true} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      {route.subMenu.map((subMenu,index) => (
+                        <ListItemButton
+                          key={index}
+                          sx={{ pl: 4 }}
+                          onClick={() => {
+                            navigate(subMenu.path)
+                          }}
+                        >
+                          <ListItemIcon>
+                            <MailIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={subMenu.name} />
+                        </ListItemButton>
+                      ))}
+                    </List>
+                  </Collapse>
+                )}
+              </ListItem>
+            );
+          })}
         </List>
         <Divider />
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <div role="presentation" >
+        <div role="presentation">
           <Breadcrumbs aria-label="breadcrumb">
             <Link underline="hover" color="inherit" href="/" to="/">
               Home
@@ -298,13 +329,14 @@ export default function MainLayout() {
             <Link
               underline="hover"
               color="inherit"
-              href={"/"+'currentPath'}
-              to={"/"+currentPath}
+              href={"/" + "currentPath"}
+              to={"/" + currentPath}
             >
               {currentPath}
             </Link>
-            { location.pathname.split("/")[2] && <Typography sx={{ color: "text.primary" }}>详情</Typography>}
-            
+            {location.pathname.split("/")[2] && (
+              <Typography sx={{ color: "text.primary" }}>详情</Typography>
+            )}
           </Breadcrumbs>
         </div>
         <Outlet />
