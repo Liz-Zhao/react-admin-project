@@ -18,7 +18,8 @@ import ConnectUser from './pages/ConnectUser'
 import { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import {setRoutes,disableLoading} from './slices/appSlice'
-import { Box } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
+import SkeletonLoading from "./components/SkeletonLoading";
 
 
 const components = {
@@ -50,8 +51,8 @@ function App() {
 
   if(routLoading && token){
     return (
-      <Box component="section" sx={{textAlign:'center', justifyContent:'center'}}>Loading...</Box>
-    )
+      <SkeletonLoading />
+    );
   }
 
   return (
